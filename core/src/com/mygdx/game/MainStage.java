@@ -10,7 +10,26 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+class FigureSelector {
+    int health, maxhealth, armor;
+    float x, y;
+
+    FigureSelector() {
+    }
+
+    FigureSelector(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public boolean select(Figure figure) {
+        // 选择器，需要重写
+        return false;
+    }
+}
 
 public class MainStage extends Stage {
 
@@ -184,5 +203,25 @@ public class MainStage extends Stage {
         }
 
         return r;
+    }
+
+    public Array<Figure> selectFigure(FigureSelector selector) {
+        Array<Figure> figures = new Array<Figure>();
+
+        // 选择figure
+        for (Actor i : getActors()) {
+            if (!(i instanceof Figure)) {
+                continue;
+            }
+
+            Figure figure = (Figure) i;
+
+            if (selector.select(figure)) {
+                figures.add(figure);
+            }
+        }
+
+        return figures;
+
     }
 }

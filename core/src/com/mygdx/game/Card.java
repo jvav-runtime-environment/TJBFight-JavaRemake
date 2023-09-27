@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -139,21 +140,23 @@ class MoveCard extends Card {
     @Override
     public boolean func(float aimx, float aimy) {
         if (map.getPoint(aimx, aimy) == 2) {
+            Array<Figure> figures = new Array<Figure>();
+
             // 检查位置是否占用
-            for (Actor i : stage.mainstage.getActors()) {
-                if (!(i instanceof Figure)) {
-                    continue;
+            figures = stage.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
+                public boolean select(Figure figure) {
+                    if (figure.RelativePosition.x == x && figure.RelativePosition.y == y) {
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
+            });
 
-                Figure figure = (Figure) i;
-
-                if (figure.RelativePosition.x == aimx && figure.RelativePosition.y == aimy) {
-                    return false;
-                }
+            if (figures.size == 0) {
+                player.setRelativePosition(aimx, aimy);
+                return true;
             }
-
-            player.setRelativePosition(aimx, aimy);
-            return true;
         }
         return false;
     }
@@ -175,18 +178,23 @@ class AttakCard extends Card {
     @Override
     public boolean func(float aimx, float aimy) {
         if (map.getPoint(aimx, aimy) == 2) {
-            for (Actor i : stage.mainstage.getActors()) {
-                if (!(i instanceof Figure)) {
-                    continue;
-                }
+            Array<Figure> figures = new Array<Figure>();
 
-                Figure figure = (Figure) i;
-
-                if (figure.RelativePosition.x == aimx && figure.RelativePosition.y == aimy) {
-                    figure.getDamage(new Damage(player, Consts.PHYSICAL_DAMAGE_ID, damage));
-                    return true;
+            figures = stage.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
+                public boolean select(Figure figure) {
+                    if (figure.RelativePosition.x == x && figure.RelativePosition.y == y) {
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
+            });
+
+            if (figures.size != 0) {
+                figures.first().getDamage(new Damage(player, Consts.PHYSICAL_DAMAGE_ID, damage));
+                return true;
             }
+
         }
         return false;
     }

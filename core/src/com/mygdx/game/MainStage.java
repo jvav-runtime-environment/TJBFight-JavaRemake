@@ -32,7 +32,7 @@ class FigureSelector {
 }
 
 public class MainStage extends Stage {
-
+    int round = 0;
     Map map = new Map();
     Player player = new Player();
     ShapeRenderer sr = new ShapeRenderer();
@@ -95,6 +95,7 @@ public class MainStage extends Stage {
         super.act(delta);
         cardstage.act(delta);
 
+        // 地图设置
         map.resetAll();
 
         if (cardstage.onFocusCard != null) {
@@ -110,6 +111,9 @@ public class MainStage extends Stage {
                 }
             }
         }
+
+        //if ()
+
     }
 
     @Override
@@ -222,6 +226,5 @@ public class MainStage extends Stage {
         }
 
         return figures;
-
     }
 }

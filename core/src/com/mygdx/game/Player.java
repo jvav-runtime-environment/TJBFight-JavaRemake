@@ -2,17 +2,31 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 
 public class Player extends Figure {
+    int energy = 3;
+    int maxenergy = 3;
+
     Player() {
-         health = 50;
+        health = 50;
         maxhealth = 100;
 
         image = new Texture(Gdx.files.internal("badlogic.jpg"));
         setSize(50, 100);
-        
-        setPosition(0,1000);
+
+        setPosition(0, 1000);
         setRelativePosition(4, 4);
     }
 
+    @Override
+    public void act(float delta){
+        super.act(delta);
+
+        energy = MathUtils.clamp(energy, 0, maxenergy);
+    }
+
+    public boolean hasEnergy(){
+        return energy>0;
+    }
 }

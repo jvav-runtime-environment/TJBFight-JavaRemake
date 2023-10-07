@@ -145,11 +145,7 @@ class MoveCard extends Card {
             // 检查位置是否占用
             figures = stage.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
                 public boolean select(Figure figure) {
-                    if (figure.RelativePosition.x == x && figure.RelativePosition.y == y) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    return figure.RelativePosition.x == x && figure.RelativePosition.y == y;
                 }
             });
 
@@ -182,11 +178,7 @@ class AttakCard extends Card {
 
             figures = stage.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
                 public boolean select(Figure figure) {
-                    if (figure.RelativePosition.x == x && figure.RelativePosition.y == y) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    return figure.RelativePosition.x == x && figure.RelativePosition.y == y;
                 }
             });
 

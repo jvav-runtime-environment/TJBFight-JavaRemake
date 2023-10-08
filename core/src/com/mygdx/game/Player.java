@@ -20,13 +20,31 @@ public class Player extends Figure {
     }
 
     @Override
-    public void act(float delta){
+    public void act(float delta) {
         super.act(delta);
 
         energy = MathUtils.clamp(energy, 0, maxenergy);
     }
 
-    public boolean hasEnergy(){
-        return energy>0;
+    @Override
+    public boolean allFinished() {
+        return !hasEnergy() && super.allFinished();
+    }
+
+    public boolean consumeEnergy(int ammont) {
+        if (ammont > energy) {
+            return false;
+        } else {
+            energy -= ammont;
+            return true;
+        }
+    }
+
+    public void recoverEnergy() {
+        energy = maxenergy;
+    }
+
+    public boolean hasEnergy() {
+        return energy > 0;
     }
 }

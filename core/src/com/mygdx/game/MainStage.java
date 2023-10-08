@@ -33,6 +33,8 @@ class FigureSelector {
 
 public class MainStage extends Stage {
     int round = 0;
+    boolean playerTurn = true;
+    Array<Enemy> enemies = new Array<Enemy>();
     Map map = new Map();
     Player player = new Player();
     ShapeRenderer sr = new ShapeRenderer();
@@ -49,7 +51,7 @@ public class MainStage extends Stage {
 
         addActor(map);
         addActor(player);
-        addActor(new Enemy());
+        addEnemy(new Enemy());
     }
 
     @Override
@@ -112,8 +114,36 @@ public class MainStage extends Stage {
             }
         }
 
-        //if ()
+        if (playerTurn) {
+            if (player.allFinished()) {
+                enemyTurnStart();
+            }
+        } else {
+            if (isEnemyAllFinished()) {
+                round++;
+                playerTurnStart();
+            }
+        }
+    }
 
+    void playerTurnStart() {
+        System.out.println("player turn");
+        playerTurn = true;
+        player.recoverEnergy();
+    }
+
+    void enemyTurnStart() {
+        System.out.println("enemy turn");
+        playerTurn = false;
+    }
+
+    boolean isEnemyAllFinished() {
+        for (Enemy i : enemies) {
+            if (!i.allFinished()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -145,19 +175,21 @@ public class MainStage extends Stage {
         return r;
     }
 
-    public Figure getFigureByPosition(float x, float y) {
-        for (Actor i : getActors()) {
-            if (i == map) {
-                continue;
-            }
-
-            Figure f = (Figure) i;
-            if (f.RelativePosition.x == x && f.RelativePosition.y == y) {
-                return f;
-            }
-        }
-        return null;
-    }
+    /*
+     * public Figure getFigureByPosition(float x, float y) {
+     * for (Actor i : getActors()) {
+     * if (i == map) {
+     * continue;
+     * }
+     * 
+     * Figure f = (Figure) i;
+     * if (f.RelativePosition.x == x && f.RelativePosition.y == y) {
+     * return f;
+     * }
+     * }
+     * return null;
+     * }
+     */
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
@@ -173,6 +205,11 @@ public class MainStage extends Stage {
         return r;
     }
 
+    public void addEnemy(Enemy enemy) {
+        enemies.add(enemy);
+        addActor(enemy);
+    }
+
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
         boolean r = super.touchUp(x, y, pointer, button);
@@ -180,30 +217,33 @@ public class MainStage extends Stage {
 
         isDraggingMap = false;
 
-        // 坐标转换
-        tempVec.set(x, y);
-        screenToStageCoordinates(tempVec);
+        if (playerTurn) {
 
-        Figure f = (Figure) hit(tempVec.x, tempVec.y, true);
+            // 坐标转换
+            tempVec.set(x, y);
+            screenToStageCoordinates(tempVec);
 
-        // 检查是否有目标？如果有就以目标位置执行，如果没有是否在某个位置？如果有，以位置执行
-        if (cardstage.getOnFocusCard() != null) {
-            if (f != null) {
-                done = cardstage.getOnFocusCard().func(f.RelativePosition.x, f.RelativePosition.y);
-            } else {
-                Vector2 position = Consts.getRelativePosition(tempVec.x, tempVec.y);
+            Figure f = (Figure) hit(tempVec.x, tempVec.y, true);
 
-                if (position != null && map.testPointReachable(position.x, position.y)) {
-                    done = cardstage.getOnFocusCard().func(position.x, position.y);
+            // 检查是否有目标？如果有就以目标位置执行，如果没有是否在某个位置？如果有，以位置执行
+            if (cardstage.getOnFocusCard() != null) {
+                if (f != null) {
+                    done = cardstage.getOnFocusCard().func(f.RelativePosition.x, f.RelativePosition.y);
+                } else {
+                    Vector2 position = Consts.getRelativePosition(tempVec.x, tempVec.y);
+
+                    if (position != null && map.testPointReachable(position.x, position.y)) {
+                        done = cardstage.getOnFocusCard().func(position.x, position.y);
+                    }
                 }
             }
-        }
 
-        // 检查执行是否成功并处理卡牌
-        if (done) {
-            cardstage.destroyOnFocusCard();
-        } else {
-            cardstage.resetOnFocusCard();
+            // 检查执行是否成功并处理卡牌
+            if (done) {
+                cardstage.destroyOnFocusCard();
+            } else {
+                cardstage.resetOnFocusCard();
+            }
         }
 
         return r;

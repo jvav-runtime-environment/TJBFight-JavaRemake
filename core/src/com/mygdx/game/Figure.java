@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.utils.Array;
 
 public class Figure extends Actor {
     Texture image;
@@ -14,6 +15,7 @@ public class Figure extends Actor {
     int maxhealth;
     int armor;
     Vector2 RelativePosition;// not the real Positon,needs to be changed
+    
 
     // other things...
 
@@ -62,6 +64,10 @@ public class Figure extends Actor {
 
     void kill(){
         remove();
+    }
+
+    public boolean allFinished(){
+        return getActions().size == 0;
     }
 
     @Override

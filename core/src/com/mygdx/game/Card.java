@@ -18,6 +18,8 @@ class Card extends Actor {
     int maxRange;
     int minRange;
 
+    int energyCost = 1;
+
     // 文本显示
     CharSequence name;
     Label nameLabel;
@@ -38,6 +40,7 @@ class Card extends Actor {
 
     public boolean func(float aimx, float aimy) {
         // 卡牌执行的函数，需要覆盖
+        player.consumeEnergy(energyCost);
         // 是否执行完成
         return false;
     }
@@ -133,7 +136,8 @@ class MoveCard extends Card {
         minRange = 0;
         icon = new Texture(Gdx.files.internal("move.png"));
         name = "[#000000ff]移动";
-        info = String.format("[#000000ff]移动到指定位置, 范围为[#00ff00ff] %d [#000000ff]。", maxRange);
+        info = String.format("[#000000ff]移动到指定位置, 移动范围为[#00ff00ff] %d [#000000ff]。\n消耗[#00ff00ff] %d [#000000ff]能量",
+                maxRange, energyCost);
         updateLabels();
     }
 
@@ -149,7 +153,7 @@ class MoveCard extends Card {
                 }
             });
 
-            if (figures.size == 0) {
+            if (figures.size == 0 && player.consumeEnergy(energyCost)) {
                 player.setRelativePosition(aimx, aimy);
                 return true;
             }
@@ -167,7 +171,8 @@ class AttakCard extends Card {
         damage = 20;
         icon = new Texture(Gdx.files.internal("attack.png"));
         name = "[#000000ff]攻击";
-        info = String.format("[#000000ff]攻击目标，造成[#00ff00ff] %d [#000000ff]点伤害。", damage);
+        info = String.format("[#000000ff]攻击目标，造成[#00ff00ff] %d [#000000ff]点伤害。\n消耗[#00ff00ff] %d [#000000ff]能量", damage,
+                energyCost);
         updateLabels();
     }
 
@@ -182,11 +187,10 @@ class AttakCard extends Card {
                 }
             });
 
-            if (figures.size != 0) {
+            if (figures.size != 0 && player.consumeEnergy(energyCost)) {
                 figures.first().getDamage(new Damage(player, Consts.PHYSICAL_DAMAGE_ID, damage));
                 return true;
             }
-
         }
         return false;
     }

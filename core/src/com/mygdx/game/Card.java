@@ -118,12 +118,11 @@ class DebugCard extends Card {
 
     @Override
     public void setMap() {
-        // map.setInLines(player.RelativePosition.x, player.RelativePosition.y, 3, 2);
     }
 
     @Override
     public boolean func(float aimx, float aimy) {
-        stage.addActor(new MoveCard());
+        stage.addActor(new AttakCard());
         stage.addActor(new AttakCard());
         return false;
     }
@@ -189,6 +188,7 @@ class AttakCard extends Card {
 
             if (figures.size != 0 && player.consumeEnergy(energyCost)) {
                 figures.first().getDamage(new Damage(player, Consts.PHYSICAL_DAMAGE_ID, damage));
+                stage.mainstage.addAnimation(new Sweep1(figures.first().getAbsPosition()));
                 return true;
             }
         }

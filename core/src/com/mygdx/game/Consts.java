@@ -2,8 +2,10 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class Consts {
     static final int windowWidth = 800;
@@ -21,6 +23,9 @@ public class Consts {
     static BitmapFont NameFont = new BitmapFont(Gdx.files.internal(".\\fonts\\Hanazono-standard.fnt"),
             Gdx.files.internal(".\\fonts\\Hanazono-standard.png"),
             false);
+
+    static TextureAtlas sweep1Atlas = new TextureAtlas(Gdx.files.internal(".\\sweep\\sweep.atlas"));
+    static Array<TextureAtlas.AtlasRegion> sweep1 = sweep1Atlas.getRegions();
 
     private static Vector2 tempVec = new Vector2();
 

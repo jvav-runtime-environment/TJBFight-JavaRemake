@@ -5,7 +5,12 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
+//import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Color;
@@ -31,10 +36,37 @@ class FigureSelector {
     }
 }
 
+class positionedAnimation {
+    Vector2 pos;
+    float lifetime = 0;
+    Animation<AtlasRegion> animation;
+
+    positionedAnimation(Animation<AtlasRegion> animation, Vector2 pos) {
+        this.pos = pos;
+        this.animation = animation;
+    }
+
+    public void draw(Batch batch) {
+        lifetime += Gdx.graphics.getDeltaTime();
+        batch.draw(animation.getKeyFrame(lifetime), pos.x, pos.y);
+    }
+}
+
+class Sweep1 extends positionedAnimation {
+    Sweep1(Vector2 pos) {
+        super(new Animation<>(0.05f, Consts.sweep1, PlayMode.NORMAL), pos);
+        pos.x -= 32;
+        pos.y += 32;
+    }
+}
+
 public class MainStage extends Stage {
     int round = 0;
     boolean playerTurn = true;
+
     Array<Enemy> enemies = new Array<Enemy>();
+    Array<positionedAnimation> animations = new Array<positionedAnimation>();
+
     Map map = new Map();
     Player player = new Player();
     ShapeRenderer sr = new ShapeRenderer();
@@ -87,6 +119,20 @@ public class MainStage extends Stage {
 
             // 结束
             sr.end();
+
+            Batch batch = getBatch();
+            batch.setProjectionMatrix(getCamera().combined);
+
+            batch.begin();
+
+            for (positionedAnimation j : animations) {
+                j.draw(batch);
+                if (j.animation.isAnimationFinished(j.lifetime)) {
+                    animations.removeValue(j, false);
+                }
+            }
+
+            batch.end();
 
             cardstage.draw();
         }
@@ -266,5 +312,9 @@ public class MainStage extends Stage {
         }
 
         return figures;
+    }
+
+    public void addAnimation(positionedAnimation animation) {
+        animations.add(animation);
     }
 }

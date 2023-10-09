@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.badlogic.gdx.utils.Array;
+//import com.badlogic.gdx.utils.Array;
 
 public class Figure extends Actor {
     Texture image;
@@ -16,7 +16,6 @@ public class Figure extends Actor {
     int armor;
     Vector2 RelativePosition;// not the real Positon,needs to be changed
     
-
     // other things...
 
     Figure() {
@@ -85,5 +84,9 @@ public class Figure extends Actor {
 
     public float getHealthPercent() {
         return (float) health / (float) maxhealth;
+    }
+
+    public Vector2 getAbsPosition(){
+        return Consts.getAbsPosition(RelativePosition.x, RelativePosition.y);
     }
 }

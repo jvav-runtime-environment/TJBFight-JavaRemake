@@ -15,11 +15,11 @@ public class Consts {
     static final int BlockSize = 125;
     static final int PHYSICAL_DAMAGE_ID = 0;
 
-    static BitmapFont infoFont = new BitmapFont(Gdx.files.internal("Hanazono-standard.fnt"),
-            Gdx.files.internal("Hanazono-standard.png"),
+    static BitmapFont infoFont = new BitmapFont(Gdx.files.internal(".\\fonts\\Hanazono-standard.fnt"),
+            Gdx.files.internal(".\\fonts\\Hanazono-standard.png"),
             false);
-    static BitmapFont NameFont = new BitmapFont(Gdx.files.internal("Hanazono-standard.fnt"),
-            Gdx.files.internal("Hanazono-standard.png"),
+    static BitmapFont NameFont = new BitmapFont(Gdx.files.internal(".\\fonts\\Hanazono-standard.fnt"),
+            Gdx.files.internal(".\\fonts\\Hanazono-standard.png"),
             false);
 
     private static Vector2 tempVec = new Vector2();

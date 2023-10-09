@@ -14,4 +14,8 @@ class Enemy extends Figure {
         setPosition(0,1000);
         setRelativePosition(5, 4);
     }
+
+    public void AI(){
+
+    }
 }

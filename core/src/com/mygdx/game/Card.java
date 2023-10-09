@@ -110,7 +110,7 @@ class DebugCard extends Card {
     DebugCard() {
         maxRange = 999;
         minRange = -1;
-        icon = new Texture(Gdx.files.internal("debug.png"));
+        icon = new Texture(Gdx.files.internal(".\\icons\\debug.png"));
         name = "[#ff0000ff]调试";
         info = "[#ff0000ff]增加一张卡。";
         updateLabels();
@@ -134,7 +134,7 @@ class MoveCard extends Card {
     MoveCard() {
         maxRange = 2;
         minRange = 0;
-        icon = new Texture(Gdx.files.internal("move.png"));
+        icon = new Texture(Gdx.files.internal(".\\icons\\move.png"));
         name = "[#000000ff]移动";
         info = String.format("[#000000ff]移动到指定位置, 移动范围为[#00ff00ff] %d [#000000ff]。\n消耗[#00ff00ff] %d [#000000ff]能量",
                 maxRange, energyCost);
@@ -169,7 +169,7 @@ class AttakCard extends Card {
         maxRange = 2;
         minRange = 0;
         damage = 20;
-        icon = new Texture(Gdx.files.internal("attack.png"));
+        icon = new Texture(Gdx.files.internal(".\\icons\\attack.png"));
         name = "[#000000ff]攻击";
         info = String.format("[#000000ff]攻击目标，造成[#00ff00ff] %d [#000000ff]点伤害。\n消耗[#00ff00ff] %d [#000000ff]能量", damage,
                 energyCost);

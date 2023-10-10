@@ -4,19 +4,32 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 public class Consts {
+    //公用常量
+    static MainStage mainstage;
+    static CardStage cardStage;
+    static DamageRender damageRender;
+
+    // 窗口常数
     static final int windowWidth = 800;
     static final int windowHeight = 600;
 
+    // 状态条常数
     static final int BarHeight = 6;
-    static final int BarWidth = 125;
+    static final int BarWidth = 75;
 
+    // 显示常数
     static final int BlockSize = 125;
+
+    // 伤害ID
     static final int PHYSICAL_DAMAGE_ID = 0;
 
+    // 卡面字体
     static BitmapFont infoFont = new BitmapFont(Gdx.files.internal(".\\fonts\\Hanazono-standard.fnt"),
             Gdx.files.internal(".\\fonts\\Hanazono-standard.png"),
             false);
@@ -24,10 +37,17 @@ public class Consts {
             Gdx.files.internal(".\\fonts\\Hanazono-standard.png"),
             false);
 
+    // 横扫1动画
     static TextureAtlas sweep1Atlas = new TextureAtlas(Gdx.files.internal(".\\sweep\\sweep.atlas"));
     static Array<TextureAtlas.AtlasRegion> sweep1 = sweep1Atlas.getRegions();
 
+    // 临时向量
     private static Vector2 tempVec = new Vector2();
+
+    // 伤害显示字体
+    private static FreeTypeFontGenerator damageFont = new FreeTypeFontGenerator(
+            Gdx.files.internal("C:\\Windows\\Fonts\\simhei.ttf"));
+    
 
     public static Vector2 getAbsPosition(float x, float y) {
         float outx = MathUtils.cosDeg(120) * y + x;
@@ -82,5 +102,15 @@ public class Consts {
         } else {
             return null;
         }
+    }
+
+    public static BitmapFont getDamageRenderFont(){
+        FreeTypeFontGenerator.FreeTypeFontParameter damageFontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        damageFontParameter.borderWidth = 1.5f;
+        damageFontParameter.borderColor = Color.WHITE;
+        damageFontParameter.size = 48;
+        damageFontParameter.color = Color.RED;
+
+        return damageFont.generateFont(damageFontParameter);
     }
 }

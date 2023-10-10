@@ -15,7 +15,7 @@ public class Figure extends Actor {
     int maxhealth;
     int armor;
     Vector2 RelativePosition;// not the real Positon,needs to be changed
-    
+
     // other things...
 
     Figure() {
@@ -31,13 +31,14 @@ public class Figure extends Actor {
         switch (damage.DamageType) {
             case Consts.PHYSICAL_DAMAGE_ID:
                 health -= damage.ammont - armor;
+                Consts.damageRender.add(getX(), getY(), damage.ammont, damage.Starter.getX());
                 break;
         }
     }
 
     void setRelativePosition(float x, float y) {
         RelativePosition.set((int) x, (int) y);
-        
+
         // 移动动画
         Vector2 vec = Consts.getAbsPosition(RelativePosition.x, RelativePosition.y);
         MoveToAction action = new MoveToAction();
@@ -53,19 +54,19 @@ public class Figure extends Actor {
     public void act(float delta) {
         super.act(delta);
 
-        if (health<=0){
+        if (health <= 0) {
             kill();
         }
-        
+
         health = MathUtils.clamp(health, 0, maxhealth);
-        
+
     }
 
-    void kill(){
+    void kill() {
         remove();
     }
 
-    public boolean allFinished(){
+    public boolean allFinished() {
         return getActions().size == 0;
     }
 
@@ -86,7 +87,7 @@ public class Figure extends Actor {
         return (float) health / (float) maxhealth;
     }
 
-    public Vector2 getAbsPosition(){
+    public Vector2 getAbsPosition() {
         return Consts.getAbsPosition(RelativePosition.x, RelativePosition.y);
     }
 }

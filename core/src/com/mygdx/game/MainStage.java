@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
-//import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -70,6 +69,7 @@ public class MainStage extends Stage {
     Map map = new Map();
     Player player = new Player();
     ShapeRenderer sr = new ShapeRenderer();
+    DamageRender damageRender = new DamageRender();
     CardStage cardstage;
 
     boolean isDraggingMap = false;
@@ -79,7 +79,10 @@ public class MainStage extends Stage {
         super(new ScreenViewport(), batch);
 
         cardstage = new CardStage(batch);
-        cardstage.bind(this);
+
+        Consts.mainstage = this;
+        Consts.cardStage = cardstage;
+        Consts.damageRender = damageRender;
 
         addActor(map);
         addActor(player);
@@ -131,6 +134,8 @@ public class MainStage extends Stage {
                     animations.removeValue(j, false);
                 }
             }
+
+            damageRender.draw(batch);
 
             batch.end();
 

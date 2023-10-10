@@ -52,8 +52,8 @@ class Card extends Actor {
         // 获取舞台和actor信息
         if (stage == null) {
             stage = (CardStage) getStage();
-            player = stage.mainstage.player;
-            map = stage.mainstage.map;
+            player = Consts.mainstage.player;
+            map = Consts.mainstage.map;
         }
     }
 
@@ -123,7 +123,7 @@ class DebugCard extends Card {
     @Override
     public boolean func(float aimx, float aimy) {
         stage.addActor(new AttakCard());
-        stage.addActor(new AttakCard());
+        stage.addActor(new MoveCard());
         return false;
     }
 }
@@ -146,7 +146,7 @@ class MoveCard extends Card {
             Array<Figure> figures = new Array<Figure>();
 
             // 检查位置是否占用
-            figures = stage.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
+            figures = Consts.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
                 public boolean select(Figure figure) {
                     return figure.RelativePosition.x == x && figure.RelativePosition.y == y;
                 }
@@ -167,7 +167,7 @@ class AttakCard extends Card {
     AttakCard() {
         maxRange = 2;
         minRange = 0;
-        damage = 20;
+        damage = 10;
         icon = new Texture(Gdx.files.internal(".\\icons\\attack.png"));
         name = "[#000000ff]攻击";
         info = String.format("[#000000ff]攻击目标，造成[#00ff00ff] %d [#000000ff]点伤害。\n消耗[#00ff00ff] %d [#000000ff]能量", damage,
@@ -180,7 +180,7 @@ class AttakCard extends Card {
         if (map.getPoint(aimx, aimy) == 2) {
             Array<Figure> figures = new Array<Figure>();
 
-            figures = stage.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
+            figures = Consts.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
                 public boolean select(Figure figure) {
                     return figure.RelativePosition.x == x && figure.RelativePosition.y == y;
                 }
@@ -188,7 +188,7 @@ class AttakCard extends Card {
 
             if (figures.size != 0 && player.consumeEnergy(energyCost)) {
                 figures.first().getDamage(new Damage(player, Consts.PHYSICAL_DAMAGE_ID, damage));
-                stage.mainstage.addAnimation(new Sweep1(figures.first().getAbsPosition()));
+                Consts.mainstage.addAnimation(new Sweep1(figures.first().getAbsPosition()));
                 return true;
             }
         }

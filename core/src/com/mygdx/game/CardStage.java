@@ -16,7 +16,6 @@ public class CardStage extends Stage {
     Card c = new DebugCard();
 
     Card onFocusCard;
-    MainStage mainstage;
     int cardnum;
     ShapeRenderer sr = new ShapeRenderer();
 
@@ -27,10 +26,6 @@ public class CardStage extends Stage {
         cardnum = 0;
 
         addActor(c);
-    }
-
-    public void bind(MainStage stage) {
-        this.mainstage = stage;
     }
 
     @Override

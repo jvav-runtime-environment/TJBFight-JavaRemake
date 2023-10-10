@@ -188,7 +188,7 @@ class AttakCard extends Card {
 
             if (figures.size != 0 && player.consumeEnergy(energyCost)) {
                 figures.first().getDamage(new Damage(player, Consts.PHYSICAL_DAMAGE_ID, damage));
-                Consts.mainstage.addAnimation(new Sweep1(figures.first().getAbsPosition()));
+                Consts.animationRender.addAnimation(new Sweep1(figures.first().getAbsPosition()));
                 return true;
             }
         }

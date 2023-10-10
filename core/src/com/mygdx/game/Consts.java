@@ -14,6 +14,7 @@ public class Consts {
     static MainStage mainstage;
     static CardStage cardStage;
     static DamageRender damageRender;
+    static AnimationRender animationRender;
 
     // 窗口常数
     static final int windowWidth = 800;
@@ -108,7 +109,7 @@ public class Consts {
         FreeTypeFontGenerator.FreeTypeFontParameter damageFontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         damageFontParameter.borderWidth = 1.5f;
         damageFontParameter.borderColor = Color.WHITE;
-        damageFontParameter.size = 48;
+        damageFontParameter.size = 32;
         damageFontParameter.color = Color.RED;
 
         return damageFont.generateFont(damageFontParameter);

@@ -17,7 +17,7 @@ class DamageNumber {
         font = Consts.getDamageRenderFont();
         this.ammont = ammont;
         pos.x = x;
-        pos.y = y;
+        pos.y = y + 32;
 
         lifetime = 120;
         velocity.y = 8;

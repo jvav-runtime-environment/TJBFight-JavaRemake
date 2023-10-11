@@ -22,12 +22,6 @@ public class GameMain extends ApplicationAdapter {
 
 		mainstage = new MainStage(batch);
 
-		// 启用行间颜色设置
-		Consts.NameFont.getData().markupEnabled = true;
-		Consts.infoFont.getData().markupEnabled = true;
-
-		Consts.NameFont.getData().setScale(2.0f);
-
 		// 设置舞台事件监听
 		inputProcessor.addProcessor(0, Consts.cardstage);
 		inputProcessor.addProcessor(1, mainstage);

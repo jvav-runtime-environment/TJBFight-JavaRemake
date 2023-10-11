@@ -73,10 +73,10 @@ class Card extends Actor {
     void updateLabels() {
         // 更新卡面文本
         LabelStyle nameStyle = new LabelStyle();
-        nameStyle.font = Consts.NameFont;
+        nameStyle.font = Consts.getNameFont(name);
 
         LabelStyle infoStyle = new LabelStyle();
-        infoStyle.font = Consts.infoFont;
+        infoStyle.font = Consts.getInfoFont(info);
 
         nameLabel = new Label(name, nameStyle);
         infoLabel = new Label(info, infoStyle);

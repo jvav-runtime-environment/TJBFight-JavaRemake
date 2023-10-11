@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class Consts {
     // 注入常量
@@ -30,14 +31,6 @@ public class Consts {
     // 伤害ID
     static final int PHYSICAL_DAMAGE_ID = 0;
 
-    // 卡面字体
-    static BitmapFont infoFont = new BitmapFont(Gdx.files.internal(".\\fonts\\Hanazono-standard.fnt"),
-            Gdx.files.internal(".\\fonts\\Hanazono-standard.png"),
-            false);
-    static BitmapFont NameFont = new BitmapFont(Gdx.files.internal(".\\fonts\\Hanazono-standard.fnt"),
-            Gdx.files.internal(".\\fonts\\Hanazono-standard.png"),
-            false);
-
     // 横扫1动画
     static TextureAtlas sweep1Atlas = new TextureAtlas(Gdx.files.internal(".\\sweep\\sweep.atlas"));
     static Array<TextureAtlas.AtlasRegion> sweep1 = sweep1Atlas.getRegions();
@@ -46,7 +39,7 @@ public class Consts {
     private static Vector2 tempVec = new Vector2();
 
     // 伤害显示字体
-    private static FreeTypeFontGenerator damageFont = new FreeTypeFontGenerator(
+    private static FreeTypeFontGenerator font = new FreeTypeFontGenerator(
             Gdx.files.internal("C:\\Windows\\Fonts\\simhei.ttf"));
 
     public static Vector2 getAbsPosition(float x, float y) {
@@ -104,13 +97,37 @@ public class Consts {
         }
     }
 
-    public static BitmapFont getDamageRenderFont() {
-        FreeTypeFontGenerator.FreeTypeFontParameter damageFontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        damageFontParameter.borderWidth = 1.5f;
-        damageFontParameter.borderColor = Color.WHITE;
-        damageFontParameter.size = 32;
-        damageFontParameter.color = Color.RED;
+    public static BitmapFont getInfoFont(CharSequence s) {
+        FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        fontParameter.size = 24;
+        fontParameter.characters += s;
 
-        return damageFont.generateFont(damageFontParameter);
+        BitmapFont rfont = font.generateFont(fontParameter);
+
+        rfont.getData().markupEnabled = true;
+
+        return rfont;
+    }
+
+    public static BitmapFont getNameFont(CharSequence s) {
+        FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        fontParameter.size = 40;
+        fontParameter.characters += s;
+
+        BitmapFont rfont = font.generateFont(fontParameter);
+
+        rfont.getData().markupEnabled = true;
+
+        return rfont;
+    }
+
+    public static BitmapFont getDamageRenderFont() {
+        FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        fontParameter.borderWidth = 1.6f;
+        fontParameter.borderColor = Color.WHITE;
+        fontParameter.size = 30;
+        fontParameter.color = Color.RED;
+
+        return font.generateFont(fontParameter);
     }
 }

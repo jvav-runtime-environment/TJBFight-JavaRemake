@@ -1,10 +1,10 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 
 class DamageNumber {
     int lifetime;
@@ -14,20 +14,22 @@ class DamageNumber {
     Vector2 pos = new Vector2();
 
     DamageNumber(float x, float y, int ammont, float fromx) {
-        font = Consts.getDamageRenderFont();
         this.ammont = ammont;
+
+        font = Consts.getDamageRenderFont();
+
         pos.x = x;
         pos.y = y + 32;
 
-        lifetime = 120;
+        lifetime = 80;
         velocity.y = 16;
 
+        // 判断落点方向
         if (fromx <= x) {
             velocity.x = MathUtils.random(0.00f, 2.01f);
         } else {
             velocity.x = MathUtils.random(-2.01f, 0.00f);
         }
-
     }
 
     protected void draw(Batch batch) {
@@ -35,7 +37,7 @@ class DamageNumber {
 
         font.draw(batch, String.format("%d", ammont), pos.x, pos.y);
 
-        if (lifetime >= 80) {
+        if (lifetime >= 40) {
             velocity.y -= 0.8f;
             pos.add(velocity);
         }

@@ -29,7 +29,7 @@ public class GameMain extends ApplicationAdapter {
 		Consts.NameFont.getData().setScale(2.0f);
 
 		// 设置舞台事件监听
-		inputProcessor.addProcessor(0, mainstage.cardstage);
+		inputProcessor.addProcessor(0, Consts.cardstage);
 		inputProcessor.addProcessor(1, mainstage);
 		Gdx.input.setInputProcessor(inputProcessor);
 
@@ -48,7 +48,7 @@ public class GameMain extends ApplicationAdapter {
 	public void resize(int width, int height) {
 		// 更新舞台
 		mainstage.getViewport().update(width, height, false);
-		mainstage.cardstage.getViewport().update(width, height, true);
+		Consts.cardstage.getViewport().update(width, height, true);
 	}
 
 	@Override

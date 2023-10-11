@@ -1,19 +1,19 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.FPSLogger;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 class FigureSelector {
     int health, maxhealth, armor;
@@ -41,10 +41,11 @@ public class MainStage extends Stage {
 
     Map map = new Map();
     Player player = new Player();
+    FPSLogger l = new FPSLogger();
     ShapeRenderer sr = new ShapeRenderer();
     DamageRender damageRender = new DamageRender();
     AnimationRender animationRender = new AnimationRender();
-    FPSLogger l = new FPSLogger();
+
     CardStage cardstage;
 
     boolean isDraggingMap = false;
@@ -55,8 +56,9 @@ public class MainStage extends Stage {
 
         cardstage = new CardStage(batch);
 
+        // 注入常量
         Consts.mainstage = this;
-        Consts.cardStage = cardstage;
+        Consts.cardstage = cardstage;
         Consts.damageRender = damageRender;
         Consts.animationRender = animationRender;
 
@@ -101,6 +103,7 @@ public class MainStage extends Stage {
             sr.end();
         }
 
+        // 动画和伤害数字显示
         Batch batch = getBatch();
         batch.setProjectionMatrix(getCamera().combined);
         batch.begin();
@@ -196,22 +199,6 @@ public class MainStage extends Stage {
 
         return r;
     }
-
-    /*
-     * public Figure getFigureByPosition(float x, float y) {
-     * for (Actor i : getActors()) {
-     * if (i == map) {
-     * continue;
-     * }
-     * 
-     * Figure f = (Figure) i;
-     * if (f.RelativePosition.x == x && f.RelativePosition.y == y) {
-     * return f;
-     * }
-     * }
-     * return null;
-     * }
-     */
 
     @Override
     public boolean scrolled(float amountX, float amountY) {

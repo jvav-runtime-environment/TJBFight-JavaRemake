@@ -1,8 +1,8 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -10,9 +10,9 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 public class Consts {
-    //公用常量
+    // 注入常量
     static MainStage mainstage;
-    static CardStage cardStage;
+    static CardStage cardstage;
     static DamageRender damageRender;
     static AnimationRender animationRender;
 
@@ -48,7 +48,6 @@ public class Consts {
     // 伤害显示字体
     private static FreeTypeFontGenerator damageFont = new FreeTypeFontGenerator(
             Gdx.files.internal("C:\\Windows\\Fonts\\simhei.ttf"));
-    
 
     public static Vector2 getAbsPosition(float x, float y) {
         float outx = MathUtils.cosDeg(120) * y + x;
@@ -105,7 +104,7 @@ public class Consts {
         }
     }
 
-    public static BitmapFont getDamageRenderFont(){
+    public static BitmapFont getDamageRenderFont() {
         FreeTypeFontGenerator.FreeTypeFontParameter damageFontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         damageFontParameter.borderWidth = 1.5f;
         damageFontParameter.borderColor = Color.WHITE;

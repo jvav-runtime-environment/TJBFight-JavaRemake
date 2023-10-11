@@ -31,7 +31,7 @@ public class Figure extends Actor {
         switch (damage.DamageType) {
             case Consts.PHYSICAL_DAMAGE_ID:
                 health -= damage.ammont - armor;
-                Consts.damageRender.add(getX(), getY(), damage.ammont, damage.Starter.getX());
+                Consts.damageRender.add(getX(), getY(), damage.ammont - armor, damage.Starter.getX());
                 break;
         }
     }
@@ -56,6 +56,7 @@ public class Figure extends Actor {
 
         if (health <= 0) {
             kill();
+            return;
         }
 
         health = MathUtils.clamp(health, 0, maxhealth);

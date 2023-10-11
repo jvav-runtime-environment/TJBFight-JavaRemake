@@ -167,9 +167,9 @@ class AttakCard extends Card {
     AttakCard() {
         maxRange = 2;
         minRange = 0;
-        damage = 10;
+        damage = 20;
         icon = new Texture(Gdx.files.internal(".\\icons\\attack.png"));
-        name = "[#000000ff]攻击";
+        name = "[#000000ff]攻击-[#ff0000ff]DEBUG";
         info = String.format("[#000000ff]攻击目标，造成[#00ff00ff] %d [#000000ff]点伤害。\n消耗[#00ff00ff] %d [#000000ff]能量", damage,
                 energyCost);
         updateLabels();
@@ -189,7 +189,7 @@ class AttakCard extends Card {
             if (figures.size != 0 && player.consumeEnergy(energyCost)) {
                 figures.first().getDamage(new Damage(player, Consts.PHYSICAL_DAMAGE_ID, damage));
                 Consts.animationRender.addAnimation(new Sweep1(figures.first().getAbsPosition()));
-                return true;
+                //return true;
             }
         }
         return false;

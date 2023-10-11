@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -43,6 +44,7 @@ public class MainStage extends Stage {
     ShapeRenderer sr = new ShapeRenderer();
     DamageRender damageRender = new DamageRender();
     AnimationRender animationRender = new AnimationRender();
+    FPSLogger l = new FPSLogger();
     CardStage cardstage;
 
     boolean isDraggingMap = false;
@@ -65,6 +67,7 @@ public class MainStage extends Stage {
 
     @Override
     public void draw() {
+
         super.draw();
 
         Figure figure;
@@ -96,18 +99,19 @@ public class MainStage extends Stage {
 
             // 结束
             sr.end();
-
-            Batch batch = getBatch();
-            batch.setProjectionMatrix(getCamera().combined);
-            batch.begin();
-
-            animationRender.draw(batch);
-            damageRender.draw(batch);
-
-            batch.end();
-
-            cardstage.draw();
         }
+
+        Batch batch = getBatch();
+        batch.setProjectionMatrix(getCamera().combined);
+        batch.begin();
+
+        animationRender.draw(batch);
+        damageRender.draw(batch);
+
+        batch.end();
+
+        cardstage.draw();
+
     }
 
     @Override

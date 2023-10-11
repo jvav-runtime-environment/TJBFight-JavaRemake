@@ -26,7 +26,7 @@ class positionedAnimation {
 
 class Sweep1 extends positionedAnimation {
     Sweep1(Vector2 pos) {
-        super(new Animation<>(0.08f, Consts.sweep1, PlayMode.NORMAL), pos);
+        super(new Animation<>(0.05f, Consts.sweep1, PlayMode.NORMAL), pos);
         pos.x -= 32;
         pos.y += 32;
     }

@@ -20,12 +20,12 @@ class DamageNumber {
         pos.y = y + 32;
 
         lifetime = 120;
-        velocity.y = 8;
+        velocity.y = 16;
 
         if (fromx <= x) {
-            velocity.x = MathUtils.random(0, 2.0f);
+            velocity.x = MathUtils.random(0.00f, 2.01f);
         } else {
-            velocity.x = MathUtils.random(-2.0f, 0);
+            velocity.x = MathUtils.random(-2.01f, 0.00f);
         }
 
     }
@@ -35,8 +35,10 @@ class DamageNumber {
 
         font.draw(batch, String.format("%d", ammont), pos.x, pos.y);
 
-        velocity.y -= 0.15;
-        pos.add(velocity);
+        if (lifetime >= 80) {
+            velocity.y -= 0.8f;
+            pos.add(velocity);
+        }
     }
 }
 

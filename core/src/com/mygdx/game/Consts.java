@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
@@ -35,12 +37,12 @@ public class Consts {
     static TextureAtlas sweep1Atlas = new TextureAtlas(Gdx.files.internal(".\\sweep\\sweep.atlas"));
     static Array<TextureAtlas.AtlasRegion> sweep1 = sweep1Atlas.getRegions();
 
-    // 临时向量
-    private static Vector2 tempVec = new Vector2();
-
-    // 伤害显示字体
+    // 字体
     private static FreeTypeFontGenerator font = new FreeTypeFontGenerator(
             Gdx.files.internal("C:\\Windows\\Fonts\\simhei.ttf"));
+
+    // 临时向量
+    private static Vector2 tempVec = new Vector2();
 
     public static Vector2 getAbsPosition(float x, float y) {
         float outx = MathUtils.cosDeg(120) * y + x;
@@ -73,8 +75,8 @@ public class Consts {
 
     }
 
+    // 反向转换
     private static void calcRelativePosition(float x, float y) {
-        // 反向转换
         x /= BlockSize;
         y /= BlockSize;
 
@@ -129,5 +131,38 @@ public class Consts {
         fontParameter.color = Color.RED;
 
         return font.generateFont(fontParameter);
+    }
+
+    public static SequenceAction getShakingAction(float range, int count) {
+        int seg = -1;
+
+        SequenceAction rAction = new SequenceAction();
+
+        // 初始移动
+        MoveByAction actionStart = new MoveByAction();
+        actionStart.setAmountX(range);
+        actionStart.setDuration(0.02f);
+
+        rAction.addAction(actionStart);
+
+        // 中段移动
+        for (int i = count; i > 0; i--) {
+            MoveByAction action = new MoveByAction();
+            action.setAmountX(range * 2 * seg);
+            action.setDuration(0.04f);
+
+            rAction.addAction(action);
+
+            seg *= -1;
+        }
+
+        // 回归原本位置
+        MoveByAction actionEnd = new MoveByAction();
+        actionEnd.setAmountX(range * seg);
+        actionEnd.setDuration(0.02f);
+
+        rAction.addAction(actionEnd);
+
+        return rAction;
     }
 }

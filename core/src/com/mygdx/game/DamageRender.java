@@ -13,7 +13,7 @@ class DamageNumber {
     Vector2 velocity = new Vector2();
     Vector2 pos = new Vector2();
 
-    DamageNumber(float x, float y, int ammont, float fromx) {
+    DamageNumber(float x, float y, int ammont) {
         this.ammont = ammont;
 
         font = Consts.getDamageRenderFont();
@@ -24,12 +24,8 @@ class DamageNumber {
         lifetime = 80;
         velocity.y = 16;
 
-        // 判断落点方向
-        if (fromx <= x) {
-            velocity.x = MathUtils.random(0.00f, 2.01f);
-        } else {
-            velocity.x = MathUtils.random(-2.01f, 0.00f);
-        }
+        velocity.x = MathUtils.random(-2.01f, 2.01f);
+
     }
 
     protected void draw(Batch batch) {
@@ -56,7 +52,7 @@ public class DamageRender {
         }
     }
 
-    public void add(float x, float y, int ammont, float fromx) {
-        numbers.add(new DamageNumber(x, y, ammont, fromx));
+    public void add(float x, float y, int ammont) {
+        numbers.add(new DamageNumber(x, y, ammont));
     }
 }

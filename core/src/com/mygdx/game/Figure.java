@@ -29,10 +29,15 @@ public class Figure extends Actor {
     void getDamage(Damage damage) {
         switch (damage.DamageType) {
             case Consts.PHYSICAL_DAMAGE_ID:
-                health -= damage.ammont - armor;
-                Consts.damageRender.add(getX(), getY(), damage.ammont - armor, damage.Starter.getX());
+                damage(damage.ammont - armor);
                 break;
         }
+    }
+
+    private void damage(int ammont) {
+        health -= ammont;
+        Consts.damageRender.add(getX(), getY(), ammont);
+        addAction(Consts.getShakingAction(2, 5));
     }
 
     void setRelativePosition(float x, float y) {
@@ -56,7 +61,9 @@ public class Figure extends Actor {
         health = MathUtils.clamp(health, 0, maxhealth);
 
         if (health <= 0) {
-            kill();
+            if (allFinished()) {
+                kill();
+            }
         }
 
     }

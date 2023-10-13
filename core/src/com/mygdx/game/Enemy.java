@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 class Enemy extends Figure {
     Enemy(){
-        health = 100;
+        health = 1000;
         maxhealth = 100;
 
         image = new Texture(Gdx.files.internal("badlogic.jpg"));

@@ -124,6 +124,7 @@ class DebugCard extends Card {
     public boolean func(float aimx, float aimy) {
         stage.addActor(new AttakCard());
         stage.addActor(new MoveCard());
+        stage.addActor(new SummonCard());
         return false;
     }
 }
@@ -134,7 +135,7 @@ class MoveCard extends Card {
         maxRange = 2;
         minRange = 0;
         icon = new Texture(Gdx.files.internal(".\\icons\\move.png"));
-        name = "[#000000ff]移动";
+        name = "[#000000ff]移动-[#ff0000ff]DEBUG";
         info = String.format("[#000000ff]移动到指定位置, 移动范围为[#00ff00ff] %d [#000000ff]。\n消耗[#00ff00ff] %d [#000000ff]能量",
                 maxRange, energyCost);
         updateLabels();
@@ -148,13 +149,13 @@ class MoveCard extends Card {
             // 检查位置是否占用
             figures = Consts.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
                 public boolean select(Figure figure) {
-                    return figure.RelativePosition.x == x && figure.RelativePosition.y == y;
+                    return figure.RelativePosition.x == x && figure.RelativePosition.y == y && figure.allFinished();
                 }
             });
 
             if (figures.size == 0 && player.consumeEnergy(energyCost)) {
                 player.setRelativePosition(aimx, aimy);
-                return true;
+                //return true;
             }
         }
         return false;
@@ -182,14 +183,48 @@ class AttakCard extends Card {
 
             figures = Consts.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
                 public boolean select(Figure figure) {
-                    return figure.RelativePosition.x == x && figure.RelativePosition.y == y;
+                    return figure.RelativePosition.x == x && figure.RelativePosition.y == y && figure.allFinished();
                 }
             });
 
             if (figures.size != 0 && player.consumeEnergy(energyCost)) {
                 figures.first().getDamage(new Damage(player, Consts.PHYSICAL_DAMAGE_ID, damage));
                 Consts.animationRender.addAnimation(new Sweep1(figures.first().getAbsPosition()));
-                //return true;
+                // return true;
+            }
+        }
+        return false;
+    }
+}
+
+class SummonCard extends Card {
+
+    SummonCard() {
+        maxRange = 99;
+        minRange = 0;
+        icon = new Texture(Gdx.files.internal(".\\icons\\summon.png"));
+        name = "[#000000ff]召唤-[#ff0000ff]DEBUG";
+        info = String.format("[#000000ff]召唤一个敌人，用于DEBUG");
+        updateLabels();
+    }
+
+    @Override
+    public boolean func(float aimx, float aimy) {
+        if (map.getPoint(aimx, aimy) == 2) {
+            Array<Figure> figures = new Array<Figure>();
+
+            figures = Consts.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
+                public boolean select(Figure figure) {
+                    return figure.RelativePosition.x == x && figure.RelativePosition.y == y && figure.allFinished();
+                }
+            });
+
+            if (figures.size == 0) {
+                Enemy enemy = new Enemy();
+                enemy.setRelativePosition(aimx, aimy);
+
+                Consts.mainstage.addEnemy(enemy);
+                // return true;
             }
         }
         return false;

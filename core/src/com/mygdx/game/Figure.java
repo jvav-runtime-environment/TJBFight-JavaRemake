@@ -1,15 +1,14 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
@@ -19,10 +18,11 @@ public class Figure extends Actor {
     int health;
     int maxhealth;
     int armor;
-    // boolean dying = false;
+
     Vector2 RelativePosition;// not the real Positon,needs to be changed
 
     ParticleEffect hitEffect = new ParticleEffect();
+    ParticleEffect deathEffect = new ParticleEffect();
 
     // other things...
 
@@ -33,6 +33,8 @@ public class Figure extends Actor {
 
         hitEffect.load(Gdx.files.internal(".\\particles\\spark\\spark.p"),
                 Gdx.files.internal(".\\particles\\spark"));
+        deathEffect.load(Gdx.files.internal(".\\particles\\bubble\\bubble.p"),
+                Gdx.files.internal(".\\particles\\bubble"));
 
         // add texture loading
         // ... all the initial work
@@ -51,16 +53,21 @@ public class Figure extends Actor {
         health -= ammont;
 
         if (health <= 0) {
+            // 死亡动画
             AlphaAction fadeout = new AlphaAction();
             ParallelAction action = new ParallelAction();
 
             fadeout.setAlpha(0);
-            fadeout.setDuration(1);
+            fadeout.setDuration(0.64f);
 
             action.addAction(fadeout);
             action.addAction(Consts.getShakingAction(8, 15));
 
             addAction(action);
+
+            // 死亡特效
+            deathEffect.setPosition(getCenterX(), getCenterY());
+            deathEffect.start();
         }
 
         Consts.damageRender.add(getX(), getY(), ammont);
@@ -95,7 +102,6 @@ public class Figure extends Actor {
                 kill();
             }
         }
-
     }
 
     void kill() {
@@ -103,7 +109,7 @@ public class Figure extends Actor {
     }
 
     public boolean allFinished() {
-        return getActions().size == 0 && hitEffect.isComplete();
+        return getActions().size == 0 && hitEffect.isComplete() && deathEffect.isComplete();
     }
 
     @Override
@@ -112,11 +118,11 @@ public class Figure extends Actor {
         color.a = getColor().a;
 
         batch.setColor(color);
-
         batch.draw(image, getX(), getY(), getWidth(), getHeight());
-        hitEffect.draw(batch, Gdx.graphics.getDeltaTime());
-
         batch.setColor(color.r, color.g, color.b, 1);
+        
+        hitEffect.draw(batch, Gdx.graphics.getDeltaTime());
+        deathEffect.draw(batch, Gdx.graphics.getDeltaTime());
     }
 
     public float getCenterX() {

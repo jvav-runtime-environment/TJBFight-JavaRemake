@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class CardStage extends Stage {
@@ -175,15 +175,18 @@ public class CardStage extends Stage {
         MoveByAction maction = new MoveByAction();
 
         maction.setAmountY(MathUtils.random(500, 800));
-        maction.setDuration(0.5f);
-        maction.setInterpolation(Interpolation.circleOut);
+        maction.setDuration(1);
+        maction.setInterpolation(Interpolation.fade);
 
         AlphaAction aaction = new AlphaAction();
-        aaction.setDuration(0.2f);
+        aaction.setDuration(1);
+        aaction.setInterpolation(Interpolation.sineOut);
 
-        SequenceAction action = new SequenceAction(maction, aaction);
+        ParallelAction action = new ParallelAction(maction, aaction);
 
         card.addAction(action);
+        card.releaseEffect.setPosition(card.getCenterX(), card.getCenterY());
+        card.releaseEffect.start();
     }
 
     public void freeOnFocusCard() {

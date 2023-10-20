@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -18,6 +19,8 @@ class Card extends Actor {
     Map map;
     int maxRange;
     int minRange;
+
+    ParticleEffect releaseEffect = new ParticleEffect();
 
     int energyCost = 1;
 
@@ -37,6 +40,9 @@ class Card extends Actor {
         info = "";
 
         updateLabels();
+
+        releaseEffect.load(Gdx.files.internal(".\\particles\\card-release\\card-release.p"),
+                Gdx.files.internal(".\\particles\\card-release\\"));
 
         stage = Consts.cardstage;
         player = Consts.mainstage.player;
@@ -102,6 +108,8 @@ class Card extends Actor {
         batch.draw(icon, getCenterX() - 75, getCenterY() - 35, 150, 150);
 
         batch.setColor(color.r, color.g, color.b, color.a);
+
+        releaseEffect.draw(batch, Gdx.graphics.getDeltaTime());
     }
 }
 

@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -36,6 +37,10 @@ class Card extends Actor {
         info = "";
 
         updateLabels();
+
+        stage = Consts.cardstage;
+        player = Consts.mainstage.player;
+        map = Consts.mainstage.map;
     }
 
     public boolean func(float aimx, float aimy) {
@@ -43,18 +48,6 @@ class Card extends Actor {
         player.consumeEnergy(energyCost);
         // 是否执行完成
         return false;
-    }
-
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-
-        // 获取舞台和actor信息
-        if (stage == null) {
-            stage = (CardStage) getStage();
-            player = Consts.mainstage.player;
-            map = Consts.mainstage.map;
-        }
     }
 
     public void setMap() {
@@ -70,7 +63,7 @@ class Card extends Actor {
         return getY() + getHeight() / 2;
     }
 
-    void updateLabels() {
+    protected void updateLabels() {
         // 更新卡面文本
         LabelStyle nameStyle = new LabelStyle();
         nameStyle.font = Consts.getNameFont(name);
@@ -93,16 +86,22 @@ class Card extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        Color color = batch.getColor();
+        color.a = getColor().a;
+
+        batch.setColor(color);
         batch.draw(image, getX(), getY());
 
         // 文本与卡牌的相对位置
         nameLabel.setPosition(getX() + 5, getHeight() - nameLabel.getHeight() + getY());
         infoLabel.setPosition(getX() + 5, getY());
 
-        nameLabel.draw(batch, parentAlpha);
-        infoLabel.draw(batch, parentAlpha);
+        nameLabel.draw(batch, getColor().a);
+        infoLabel.draw(batch, getColor().a);
 
         batch.draw(icon, getCenterX() - 75, getCenterY() - 35, 150, 150);
+
+        batch.setColor(color.r, color.g, color.b, color.a);
     }
 }
 
@@ -155,7 +154,7 @@ class MoveCard extends Card {
 
             if (figures.size == 0 && player.consumeEnergy(energyCost)) {
                 player.setRelativePosition(aimx, aimy);
-                //return true;
+                // return true;
             }
         }
         return false;
@@ -224,7 +223,8 @@ class SummonCard extends Card {
                 enemy.setRelativePosition(aimx, aimy);
 
                 Consts.mainstage.addEnemy(enemy);
-                // return true;
+                Consts.cardstage.addActor(new SummonCard());
+                return true;
             }
         }
         return false;

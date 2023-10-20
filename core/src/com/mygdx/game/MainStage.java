@@ -65,6 +65,7 @@ public class MainStage extends Stage {
         addActor(map);
         addActor(player);
         addEnemy(new Enemy());
+        cardstage.addActor(new DebugCard());
     }
 
     @Override
@@ -249,7 +250,7 @@ public class MainStage extends Stage {
 
             // 检查执行是否成功并处理卡牌
             if (done) {
-                cardstage.destroyOnFocusCard();
+                cardstage.freeOnFocusCard();
             } else {
                 cardstage.resetOnFocusCard();
             }

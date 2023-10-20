@@ -120,7 +120,7 @@ public class Figure extends Actor {
         batch.setColor(color);
         batch.draw(image, getX(), getY(), getWidth(), getHeight());
         batch.setColor(color.r, color.g, color.b, 1);
-        
+
         hitEffect.draw(batch, Gdx.graphics.getDeltaTime());
         deathEffect.draw(batch, Gdx.graphics.getDeltaTime());
     }

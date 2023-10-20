@@ -1,31 +1,34 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class CardStage extends Stage {
-    Card c = new DebugCard();
-
+    int cardnum = 0;
     Card onFocusCard;
-    int cardnum;
+
+    Array<Card> handcard = new Array<>();
     ShapeRenderer sr = new ShapeRenderer();
 
     Vector2 tempVec = new Vector2();
 
     CardStage(SpriteBatch batch) {
         super(new ScreenViewport(), batch);
-        cardnum = 0;
-
-        addActor(c);
     }
 
     @Override
@@ -72,6 +75,12 @@ public class CardStage extends Stage {
     }
 
     @Override
+    public void addActor(Actor actor) {
+        super.addActor(actor);
+        handcard.add((Card) actor);
+    }
+
+    @Override
     public boolean touchDown(int x, int y, int pointer, int button) {
         boolean r = super.touchDown(x, y, pointer, button);
 
@@ -84,20 +93,31 @@ public class CardStage extends Stage {
             return r;
         } else {
             onFocusCard = (Card) hit(tempVec.x, tempVec.y, true);
-            return true;
+            if (handcard.contains(onFocusCard, false)) {
+                return true;
+            } else {
+                onFocusCard = null;
+                return false;
+            }
         }
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
-        cardnum = getActors().size;
+        cardnum = handcard.size;
+
         int index = 1;
 
-        for (Actor i : getActors()) {
+        for (Card i : handcard) {
             float d = getWidth() / (cardnum + 1);
 
-            i.getActions().clear();
+            // 去除所有MoveToAction
+            for (Action j : i.getActions()) {
+                if (j instanceof MoveToAction) {
+                    i.getActions().removeValue(j, false);
+                }
+            }
 
             MoveToAction action = new MoveToAction();
 
@@ -108,10 +128,22 @@ public class CardStage extends Stage {
             if (i.equals(onFocusCard)) {
                 action.setPosition(d * index - i.getWidth() / 2, 60);
             }
-            
+
             i.addAction(action);
 
             index++;
+        }
+
+        // 检查卡牌动画是否播放完成
+        for (Actor i : getActors()) {
+            Card card = (Card) i;
+            if (handcard.contains(card, false)) {
+                continue;
+            } else {
+                if (card.getActions().size == 0) {
+                    card.remove();
+                }
+            }
         }
     }
 
@@ -135,4 +167,28 @@ public class CardStage extends Stage {
         onFocusCard.remove();
         onFocusCard = null;
     }
+
+    public void freeCard(Card card) {
+        handcard.removeValue(card, false);
+        card.getActions().clear();
+
+        MoveByAction maction = new MoveByAction();
+
+        maction.setAmountY(MathUtils.random(500, 800));
+        maction.setDuration(0.5f);
+        maction.setInterpolation(Interpolation.circleOut);
+
+        AlphaAction aaction = new AlphaAction();
+        aaction.setDuration(0.2f);
+
+        SequenceAction action = new SequenceAction(maction, aaction);
+
+        card.addAction(action);
+    }
+
+    public void freeOnFocusCard() {
+        freeCard(onFocusCard);
+        onFocusCard = null;
+    }
+
 }

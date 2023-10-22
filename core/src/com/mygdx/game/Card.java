@@ -227,7 +227,7 @@ class SummonCard extends Card {
             });
 
             if (figures.size == 0) {
-                Enemy enemy = new Enemy();
+                Enemy enemy = new DebugEnemy();
                 enemy.setRelativePosition(aimx, aimy);
 
                 Consts.mainstage.addEnemy(enemy);

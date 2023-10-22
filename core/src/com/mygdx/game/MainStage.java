@@ -64,7 +64,7 @@ public class MainStage extends Stage {
 
         addActor(map);
         addActor(player);
-        addEnemy(new Enemy());
+        addEnemy(new DebugEnemy());
         cardstage.addActor(new DebugCard());
     }
 
@@ -165,9 +165,13 @@ public class MainStage extends Stage {
 
     boolean isEnemyAllFinished() {
         for (Enemy i : enemies) {
-            if (!i.allFinished()) {
+            if (!i.AIFinished) {
+                i.AI();
                 return false;
             }
+        }
+        for (Enemy i : enemies) {
+            i.AIFinished = false;
         }
         return true;
     }

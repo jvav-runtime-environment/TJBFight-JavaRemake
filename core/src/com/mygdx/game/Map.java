@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 
 public class Map extends Actor {
@@ -99,9 +100,16 @@ public class Map extends Actor {
     }
 
     private void setRange(int x, int y, int range, int status) {
-        // 以range范围设置地图块
+        for (int[] i : getInRange(x, y, range)) {
+            setPoint(i[0], i[1], status);
+        }
+    }
+
+    public Array<int[]> getInRange(float x, float y, int range) {
         int indexX = 0;
         int indexY = 0;
+
+        Array<int[]> list = new Array<>();
 
         // 减小范围，检查距离
         for (int[] i : map) {
@@ -119,13 +127,15 @@ public class Map extends Actor {
                 // 检测距离
                 if (Consts.getDistance(x, y, indexX, indexY) <= range) {
                     if (j != 0) {
-                        setPoint(indexX, indexY, status);
+                        list.add(new int[] { (int) indexX, (int) indexY });
                     }
                 }
                 indexY++;
             }
             indexX++;
         }
+        
+        return list;
     }
 
     public void setInRange(int x, int y, int min, int max) {

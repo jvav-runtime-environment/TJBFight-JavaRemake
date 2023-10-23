@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 
 class Enemy extends Figure {
     boolean AIFinished = false;
@@ -31,6 +32,12 @@ class Enemy extends Figure {
         return figures.size == 0;
     }
 
+    @Override
+    void kill(){
+        remove();
+        Consts.mainstage.enemies.removeValue(this, false);
+    }
+
     public void AI() {
         if (allFinished()) {
             AIFinished = true;
@@ -47,6 +54,10 @@ class DebugEnemy extends Enemy {
         while (!testPoint(pos[0], pos[1])) {
             pos = Consts.mainstage.map.getInRange(RelativePosition.x, RelativePosition.y, 2).random();
         }
+    }
+
+    private void insertDelay(){
+        addAction(new DelayAction(1));
     }
 
     @Override
@@ -73,6 +84,8 @@ class DebugEnemy extends Enemy {
                     steps = 3;
                     break;
             }
+
+            insertDelay();
         }
     }
 }

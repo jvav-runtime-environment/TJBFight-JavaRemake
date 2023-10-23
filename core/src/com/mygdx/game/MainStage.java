@@ -170,9 +170,12 @@ public class MainStage extends Stage {
                 return false;
             }
         }
+
+        // 重置AI状态
         for (Enemy i : enemies) {
             i.AIFinished = false;
         }
+        
         return true;
     }
 

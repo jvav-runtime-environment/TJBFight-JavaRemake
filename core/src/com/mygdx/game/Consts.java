@@ -61,7 +61,7 @@ public class Consts {
 
     }
 
-    public static float getDistance(float x1, float y1, int x2, int y2) {
+    public static float getDistance(float x1, float y1, float x2, float y2) {
         float X1, X2, Y1, Y2;
 
         absPositionforDistance(x1, y1);

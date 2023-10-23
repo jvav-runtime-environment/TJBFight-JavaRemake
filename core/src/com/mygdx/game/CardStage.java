@@ -93,7 +93,7 @@ public class CardStage extends Stage {
             return r;
         } else {
             onFocusCard = (Card) hit(tempVec.x, tempVec.y, true);
-            if (handcard.contains(onFocusCard, false)) {
+            if (handcard.contains(onFocusCard, false) && Consts.mainstage.playerTurn) {
                 return true;
             } else {
                 onFocusCard = null;

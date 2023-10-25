@@ -16,7 +16,7 @@ public class Player extends Figure {
         setSize(50, 100);
 
         setPosition(0, 1000);
-        setRelativePosition(4, 4);
+        MoveToRelativePosition(4, 4);
     }
 
     @Override

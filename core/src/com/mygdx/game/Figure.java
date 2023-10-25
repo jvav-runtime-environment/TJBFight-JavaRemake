@@ -21,8 +21,8 @@ public class Figure extends Actor {
 
     Vector2 RelativePosition;// not the real Positon,needs to be changed
 
-    ParticleEffect hitEffect = new ParticleEffect();
-    ParticleEffect deathEffect = new ParticleEffect();
+    ParticleEffect hitEffect = Effects.getEffect(Effects.types.hit);
+    ParticleEffect deathEffect = Effects.getEffect(Effects.types.death);
 
     // other things...
 
@@ -30,11 +30,6 @@ public class Figure extends Actor {
         RelativePosition = new Vector2();
         health = 1;
         maxhealth = 1;
-
-        hitEffect.load(Gdx.files.internal(".\\particles\\spark\\spark.p"),
-                Gdx.files.internal(".\\particles\\spark"));
-        deathEffect.load(Gdx.files.internal(".\\particles\\bubble\\bubble.p"),
-                Gdx.files.internal(".\\particles\\bubble"));
 
         // add texture loading
         // ... all the initial work
@@ -77,7 +72,7 @@ public class Figure extends Actor {
         hitEffect.start();
     }
 
-    void setRelativePosition(float x, float y) {
+    void MoveToRelativePosition(float x, float y) {
         RelativePosition.set((int) x, (int) y);
 
         // 移动动画

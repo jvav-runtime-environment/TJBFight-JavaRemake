@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -45,6 +46,7 @@ public class MainStage extends Stage {
     ShapeRenderer sr = new ShapeRenderer();
     DamageRender damageRender = new DamageRender();
     AnimationRender animationRender = new AnimationRender();
+    ParticleEffect pointerEffect = Effects.getEffect(Effects.types.pointer);
 
     CardStage cardstage;
 
@@ -66,15 +68,15 @@ public class MainStage extends Stage {
         addActor(player);
         addEnemy(new DebugEnemy());
         cardstage.addActor(new DebugCard());
+
+        pointerEffect.start();
     }
 
     @Override
     public void draw() {
-
         super.draw();
 
         Figure figure;
-
         for (Actor i : getActors()) {
             if (!(i instanceof Figure)) {
                 continue;
@@ -111,6 +113,7 @@ public class MainStage extends Stage {
 
         animationRender.draw(batch);
         damageRender.draw(batch);
+        pointerEffect.draw(batch, Gdx.graphics.getDeltaTime());
 
         batch.end();
 
@@ -141,9 +144,12 @@ public class MainStage extends Stage {
         }
 
         if (playerTurn) {
+            pointerEffect.setPosition(player.getCenterX(), player.getTop());
+
             if (player.allFinished()) {
                 enemyTurnStart();
             }
+
         } else {
             if (isEnemyAllFinished()) {
                 round++;
@@ -166,6 +172,7 @@ public class MainStage extends Stage {
     boolean isEnemyAllFinished() {
         for (Enemy i : enemies) {
             if (!i.AIFinished) {
+                pointerEffect.setPosition(i.getCenterX(), i.getTop());
                 i.AI();
                 return false;
             }

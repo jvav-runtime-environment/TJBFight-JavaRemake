@@ -20,7 +20,7 @@ class Card extends Actor {
     int maxRange;
     int minRange;
 
-    ParticleEffect releaseEffect = new ParticleEffect();
+    ParticleEffect releaseEffect = Effects.getEffect(Effects.types.release);
 
     int energyCost = 1;
 
@@ -40,9 +40,6 @@ class Card extends Actor {
         info = "";
 
         updateLabels();
-
-        releaseEffect.load(Gdx.files.internal(".\\particles\\card-release\\card-release.p"),
-                Gdx.files.internal(".\\particles\\card-release\\"));
 
         stage = Consts.cardstage;
         player = Consts.mainstage.player;
@@ -161,7 +158,7 @@ class MoveCard extends Card {
             });
 
             if (figures.size == 0 && player.consumeEnergy(energyCost)) {
-                player.setRelativePosition(aimx, aimy);
+                player.MoveToRelativePosition(aimx, aimy);
                 // return true;
             }
         }
@@ -228,7 +225,7 @@ class SummonCard extends Card {
 
             if (figures.size == 0) {
                 Enemy enemy = new DebugEnemy();
-                enemy.setRelativePosition(aimx, aimy);
+                enemy.MoveToRelativePosition(aimx, aimy);
 
                 Consts.mainstage.addEnemy(enemy);
                 Consts.cardstage.addActor(new SummonCard());

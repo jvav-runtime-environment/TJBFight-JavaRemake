@@ -17,7 +17,7 @@ class Enemy extends Figure {
         setSize(50, 100);
 
         setPosition(0, 1000);
-        setRelativePosition(5, 4);
+        MoveToRelativePosition(5, 4);
     }
 
     public Boolean testPoint(float aimx, float aimy) {
@@ -33,7 +33,7 @@ class Enemy extends Figure {
     }
 
     @Override
-    void kill(){
+    void kill() {
         remove();
         Consts.mainstage.enemies.removeValue(this, false);
     }
@@ -49,34 +49,41 @@ class DebugEnemy extends Enemy {
     int[] pos;
 
     private void getNextPoint() {
+        int breakcounter = 0;
         pos = Consts.mainstage.map.getInRange(RelativePosition.x, RelativePosition.y, 2).random();
 
         while (!testPoint(pos[0], pos[1])) {
             pos = Consts.mainstage.map.getInRange(RelativePosition.x, RelativePosition.y, 2).random();
+            
+            breakcounter++;
+            if (breakcounter >= 100) {
+                break;
+            }
         }
     }
 
-    private void insertDelay(){
+    private void insertDelay() {
         addAction(new DelayAction(1));
     }
 
     @Override
     public void AI() {
         if (allFinished()) {
+            insertDelay();
             switch (steps) {
                 case 3:
                     getNextPoint();
-                    setRelativePosition(pos[0], pos[1]);
+                    MoveToRelativePosition(pos[0], pos[1]);
                     steps--;
                     break;
                 case 2:
                     getNextPoint();
-                    setRelativePosition(pos[0], pos[1]);
+                    MoveToRelativePosition(pos[0], pos[1]);
                     steps--;
                     break;
                 case 1:
                     getNextPoint();
-                    setRelativePosition(pos[0], pos[1]);
+                    MoveToRelativePosition(pos[0], pos[1]);
                     steps--;
                     break;
                 case 0:
@@ -84,8 +91,6 @@ class DebugEnemy extends Enemy {
                     steps = 3;
                     break;
             }
-
-            insertDelay();
         }
     }
 }

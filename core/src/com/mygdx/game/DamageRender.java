@@ -16,7 +16,7 @@ class DamageNumber {
     DamageNumber(float x, float y, int ammont) {
         this.ammont = ammont;
 
-        font = Consts.getDamageRenderFont();
+        font = Fonts.getDamageRenderFont();
 
         pos.x = x;
         pos.y = y + 32;

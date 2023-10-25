@@ -61,7 +61,7 @@ public class Figure extends Actor {
             fadeout.setDuration(0.64f);
 
             action.addAction(fadeout);
-            action.addAction(Consts.getShakingAction(8, 15));
+            action.addAction(Animations.getShakingAction(8, 15));
 
             addAction(action);
 
@@ -71,7 +71,7 @@ public class Figure extends Actor {
         }
 
         Consts.damageRender.add(getX(), getY(), ammont);
-        addAction(Consts.getShakingAction(2, 5));
+        addAction(Animations.getShakingAction(2, 5));
 
         hitEffect.setPosition(getCenterX(), getCenterY());
         hitEffect.start();
@@ -81,7 +81,7 @@ public class Figure extends Actor {
         RelativePosition.set((int) x, (int) y);
 
         // 移动动画
-        Vector2 vec = Consts.getAbsPosition(RelativePosition.x, RelativePosition.y);
+        Vector2 vec = Map.getAbsPosition(RelativePosition.x, RelativePosition.y);
         MoveToAction action = new MoveToAction();
 
         action.setPosition(vec.x - getWidth() / 2, vec.y);
@@ -138,6 +138,6 @@ public class Figure extends Actor {
     }
 
     public Vector2 getAbsPosition() {
-        return Consts.getAbsPosition(RelativePosition.x, RelativePosition.y);
+        return Map.getAbsPosition(RelativePosition.x, RelativePosition.y);
     }
 }

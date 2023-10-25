@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -125,7 +126,7 @@ public class Map extends Actor {
                     continue;
                 }
                 // 检测距离
-                if (Consts.getDistance(x, y, indexX, indexY) <= range) {
+                if (getDistance(x, y, indexX, indexY) <= range) {
                     if (j != 0) {
                         list.add(new int[] { (int) indexX, (int) indexY });
                     }
@@ -134,7 +135,7 @@ public class Map extends Actor {
             }
             indexX++;
         }
-        
+
         return list;
     }
 
@@ -230,7 +231,7 @@ public class Map extends Actor {
                         break;
                 }
 
-                drawMapPosition.set(Consts.getAbsPosition(indexX, indexY));
+                drawMapPosition.set(getAbsPosition(indexX, indexY));
                 batch.draw(groundImage, drawMapPosition.x - 25, drawMapPosition.y - 12, 50, 24);
                 // 防止batch颜色错误！！！
                 batch.setColor(1, 1, 1, 1);
@@ -240,4 +241,64 @@ public class Map extends Actor {
             indexX++;
         }
     }
+
+    // 静态方法--------
+
+    // 临时向量
+    private static Vector2 tempVec = new Vector2();
+
+    public static Vector2 getAbsPosition(float x, float y) {
+        float outx = MathUtils.cosDeg(120) * y + x;
+        float outy = MathUtils.sinDeg(120) * y * 0.6f;
+
+        tempVec.set(outx * Consts.BlockSize, outy * Consts.BlockSize);
+
+        return tempVec.cpy();
+    }
+
+    private static void absPositionforDistance(float x, float y) {
+        float outx = MathUtils.cosDeg(120) * y + x;
+        float outy = MathUtils.sinDeg(120) * y;
+
+        tempVec.set(outx, outy);
+    }
+
+    public static float getDistance(float x1, float y1, float x2, float y2) {
+        float X1, X2, Y1, Y2;
+
+        absPositionforDistance(x1, y1);
+        X1 = tempVec.x;
+        Y1 = tempVec.y;
+        absPositionforDistance(x2, y2);
+        X2 = tempVec.x;
+        Y2 = tempVec.y;
+
+        return (float) (Math.sqrt(Math.pow(X1 - X2, 2) + Math.pow(Y1 - Y2, 2)) - 0.001);
+
+    }
+
+    // 反向转换
+    private static void calcRelativePosition(float x, float y) {
+        x /= Consts.BlockSize;
+        y /= Consts.BlockSize;
+
+        float outy = y / (MathUtils.sinDeg(120) * 0.6f);
+        float outx = x - MathUtils.cosDeg(120) * outy;
+
+        tempVec.set(outx, outy);
+    }
+
+    public static Vector2 getRelativePosition(float x, float y) {
+        // 坐标转换
+        calcRelativePosition(x, y);
+
+        // 检查位置是否在指定范围
+        if ((tempVec.x % 1 >= 0.8f || tempVec.x % 1 <= 0.2f) && (tempVec.y % 1 >= 0.75f || tempVec.y % 1 <= 0.25f)) {
+            tempVec.set(Math.round(tempVec.x), Math.round(tempVec.y));
+            return tempVec.cpy();
+        } else {
+            return null;
+        }
+    }
+
 }

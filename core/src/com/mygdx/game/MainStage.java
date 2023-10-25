@@ -132,8 +132,8 @@ public class MainStage extends Stage {
             // 超出范围显示红色
             tempVec.set(Gdx.input.getX(), Gdx.input.getY());
             screenToStageCoordinates(tempVec);
-            if (Consts.getRelativePosition(tempVec.x, tempVec.y) != null) {
-                tempVec = Consts.getRelativePosition(tempVec.x, tempVec.y);
+            if (Map.getRelativePosition(tempVec.x, tempVec.y) != null) {
+                tempVec = Map.getRelativePosition(tempVec.x, tempVec.y);
                 if (map.getPoint(tempVec.x, tempVec.y) == 1) {
                     map.setPoint(tempVec, 3);
                 }
@@ -247,7 +247,7 @@ public class MainStage extends Stage {
                 if (f != null) {
                     done = cardstage.getOnFocusCard().func(f.RelativePosition.x, f.RelativePosition.y);
                 } else {
-                    Vector2 position = Consts.getRelativePosition(tempVec.x, tempVec.y);
+                    Vector2 position = Map.getRelativePosition(tempVec.x, tempVec.y);
 
                     if (position != null && map.testPointReachable(position.x, position.y)) {
                         done = cardstage.getOnFocusCard().func(position.x, position.y);

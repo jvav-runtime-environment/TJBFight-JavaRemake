@@ -15,6 +15,9 @@ public class Consts {
     static final int BarHeight = 6;
     static final int BarWidth = 75;
 
+    static final int timerSpace = 15;
+    static final int timeBallRadius = 3;
+
     // 显示常数
     static final int BlockSize = 125;
 

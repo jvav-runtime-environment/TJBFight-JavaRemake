@@ -82,7 +82,6 @@ public class MainStage extends Stage {
 
         super.draw();
 
-        // 血条
         Figure figure;
         for (Actor i : getActors()) {
             // 类转换
@@ -92,6 +91,11 @@ public class MainStage extends Stage {
             float hpBarx, hpBary;
             hpBarx = figure.getCenterX() - Consts.BarWidth / 2;
             hpBary = figure.getY() - Consts.BarHeight * 3;
+
+            // 计时器计算
+            float timerleft, timery;
+            timerleft = figure.getCenterX() - (figure.time - 1) * Consts.timerSpace / 2;
+            timery = hpBary - Consts.BarHeight;
 
             // 图形准备
             sr.setProjectionMatrix(getCamera().combined);
@@ -104,6 +108,13 @@ public class MainStage extends Stage {
             sr.rect(hpBarx + 1, hpBary + 1, Consts.BarWidth - 2, Consts.BarHeight - 2);
             sr.setColor(Color.RED);
             sr.rect(hpBarx + 1, hpBary + 1, figure.getHealthPercent() * (Consts.BarWidth - 2), Consts.BarHeight - 2);
+
+            // 计时器绘制
+            sr.setColor(Color.YELLOW);
+            for (int j = figure.time; j > 0; j--) {
+                sr.circle(timerleft, timery, Consts.timeBallRadius);
+                timerleft += Consts.timerSpace;
+            }
 
             // 结束
             sr.end();

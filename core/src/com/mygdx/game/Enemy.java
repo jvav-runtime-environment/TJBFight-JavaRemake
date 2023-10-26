@@ -24,6 +24,7 @@ class Enemy extends Figure {
     void init() {
         health = 100;
         maxhealth = 100;
+        defaultTime = 3;
         time = 3;
 
         image = new Texture(Gdx.files.internal("badlogic.jpg"));
@@ -116,7 +117,6 @@ class DebugEnemy extends Enemy {
                     break;
                 case 0:
                     AIFinished = true;
-                    time = 3;
                     break;
             }
         }

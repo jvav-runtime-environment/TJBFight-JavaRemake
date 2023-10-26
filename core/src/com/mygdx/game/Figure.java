@@ -17,6 +17,7 @@ public class Figure extends Actor {
     Texture image;
     int health;
     int time;
+    int defaultTime;
     int maxhealth;
     int armor;
 
@@ -128,6 +129,23 @@ public class Figure extends Actor {
 
         hitEffect.draw(batch, Gdx.graphics.getDeltaTime());
         deathEffect.draw(batch, Gdx.graphics.getDeltaTime());
+    }
+
+    public boolean consumetime(int ammont) {
+        if (ammont > time) {
+            return false;
+        } else {
+            time -= ammont;
+            return true;
+        }
+    }
+
+    public void recoverTime() {
+        time = defaultTime;
+    }
+
+    public boolean hasTime() {
+        return time > 0;
     }
 
     public float getCenterX() {

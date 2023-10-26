@@ -179,6 +179,10 @@ public class MainStage extends Stage {
     void enemyTurnStart() {
         System.out.println("enemy turn");
         playerTurn = false;
+        
+        for (Enemy i : enemies) {
+            i.recoverTime();
+        }
     }
 
     boolean isEnemyAllFinished() {

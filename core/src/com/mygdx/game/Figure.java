@@ -16,10 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
 public class Figure extends Actor {
     Texture image;
     int health;
+    int time;
     int maxhealth;
     int armor;
 
-    Vector2 RelativePosition;// not the real Positon,needs to be changed
+    Vector2 RelativePosition = new Vector2();;// not the real Positon,needs to be changed
 
     ParticleEffect hitEffect = Effects.getEffect(Effects.types.hit);
     ParticleEffect deathEffect = Effects.getEffect(Effects.types.death);
@@ -27,13 +28,15 @@ public class Figure extends Actor {
     // other things...
 
     Figure() {
-        RelativePosition = new Vector2();
-        health = 1;
-        maxhealth = 1;
+        init();
+    }
 
-        // add texture loading
-        // ... all the initial work
+    Figure(float x, float y) {
+        init();
+        setRelativePosition(x, y);
+    }
 
+    void init() {
     }
 
     void getDamage(Damage damage) {
@@ -72,7 +75,7 @@ public class Figure extends Actor {
         hitEffect.start();
     }
 
-    void MoveToRelativePosition(float x, float y) {
+    public void MoveToRelativePosition(float x, float y) {
         RelativePosition.set((int) x, (int) y);
 
         // 移动动画
@@ -84,6 +87,13 @@ public class Figure extends Actor {
         action.setDuration(0.3f);
 
         addAction(action);
+    }
+
+    public void setRelativePosition(float x, float y) {
+        RelativePosition.set((int) x, (int) y);
+
+        Vector2 vec = Map.getAbsPosition(RelativePosition.x, RelativePosition.y);
+        setPosition(vec.x - getWidth() / 2, vec.y);
     }
 
     @Override

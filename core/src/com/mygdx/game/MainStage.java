@@ -64,9 +64,9 @@ public class MainStage extends Stage {
         Consts.damageRender = damageRender;
         Consts.animationRender = animationRender;
 
-        addActor(map);
+        player.setRelativePosition(4, 4);
         addActor(player);
-        addEnemy(new DebugEnemy());
+        addEnemy(new DebugEnemy(5, 4));
         cardstage.addActor(new DebugCard());
 
         pointerEffect.start();
@@ -74,14 +74,17 @@ public class MainStage extends Stage {
 
     @Override
     public void draw() {
+        Batch batch = getBatch();
+        getCamera().update();
+        batch.setProjectionMatrix(getCamera().combined);
+
+        map.draw(batch);
+
         super.draw();
 
+        // 血条
         Figure figure;
         for (Actor i : getActors()) {
-            if (!(i instanceof Figure)) {
-                continue;
-            }
-
             // 类转换
             figure = (Figure) i;
 
@@ -107,8 +110,6 @@ public class MainStage extends Stage {
         }
 
         // 动画和伤害数字显示
-        Batch batch = getBatch();
-        batch.setProjectionMatrix(getCamera().combined);
         batch.begin();
 
         animationRender.draw(batch);
@@ -161,7 +162,7 @@ public class MainStage extends Stage {
     void playerTurnStart() {
         System.out.println("player turn");
         playerTurn = true;
-        player.recoverEnergy();
+        player.recoverTime();
     }
 
     void enemyTurnStart() {
@@ -182,7 +183,7 @@ public class MainStage extends Stage {
         for (Enemy i : enemies) {
             i.AIFinished = false;
         }
-        
+
         return true;
     }
 
@@ -278,10 +279,6 @@ public class MainStage extends Stage {
 
         // 选择figure
         for (Actor i : getActors()) {
-            if (!(i instanceof Figure)) {
-                continue;
-            }
-
             Figure figure = (Figure) i;
 
             if (selector.select(figure)) {

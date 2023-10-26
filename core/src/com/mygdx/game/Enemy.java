@@ -2,22 +2,32 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 class Enemy extends Figure {
     boolean AIFinished = false;
-    int steps = 3;
 
     Enemy() {
+        super();
+    }
+
+    Enemy(float x, float y) {
+        super(x, y);
+    }
+
+    @Override
+    void init() {
         health = 100;
         maxhealth = 100;
+        time = 3;
 
         image = new Texture(Gdx.files.internal("badlogic.jpg"));
         setSize(50, 100);
-
-        setPosition(0, 1000);
-        MoveToRelativePosition(5, 4);
     }
 
     public Boolean testPoint(float aimx, float aimy) {
@@ -38,6 +48,21 @@ class Enemy extends Figure {
         Consts.mainstage.enemies.removeValue(this, false);
     }
 
+    @Override
+    public void MoveToRelativePosition(float x, float y) {
+        RelativePosition.set((int) x, (int) y);
+
+        // 移动动画
+        Vector2 vec = Map.getAbsPosition(RelativePosition.x, RelativePosition.y);
+        MoveToAction action = new MoveToAction();
+
+        action.setPosition(vec.x - getWidth() / 2, vec.y);
+        action.setInterpolation(Interpolation.circleOut);
+        action.setDuration(0.3f);
+
+        addAction(new SequenceAction(new DelayAction(1), action));
+    }
+
     public void AI() {
         if (allFinished()) {
             AIFinished = true;
@@ -48,13 +73,21 @@ class Enemy extends Figure {
 class DebugEnemy extends Enemy {
     int[] pos;
 
+    DebugEnemy(float x, float y) {
+        super(x, y);
+    }
+
+    DebugEnemy() {
+        super();
+    }
+
     private void getNextPoint() {
         int breakcounter = 0;
         pos = Consts.mainstage.map.getInRange(RelativePosition.x, RelativePosition.y, 2).random();
 
         while (!testPoint(pos[0], pos[1])) {
             pos = Consts.mainstage.map.getInRange(RelativePosition.x, RelativePosition.y, 2).random();
-            
+
             breakcounter++;
             if (breakcounter >= 100) {
                 break;
@@ -62,33 +95,28 @@ class DebugEnemy extends Enemy {
         }
     }
 
-    private void insertDelay() {
-        addAction(new DelayAction(1));
-    }
-
     @Override
     public void AI() {
         if (allFinished()) {
-            insertDelay();
-            switch (steps) {
+            switch (time) {
                 case 3:
                     getNextPoint();
                     MoveToRelativePosition(pos[0], pos[1]);
-                    steps--;
+                    time--;
                     break;
                 case 2:
                     getNextPoint();
                     MoveToRelativePosition(pos[0], pos[1]);
-                    steps--;
+                    time--;
                     break;
                 case 1:
                     getNextPoint();
                     MoveToRelativePosition(pos[0], pos[1]);
-                    steps--;
+                    time--;
                     break;
                 case 0:
                     AIFinished = true;
-                    steps = 3;
+                    time = 3;
                     break;
             }
         }

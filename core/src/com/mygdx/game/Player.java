@@ -5,46 +5,45 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.Texture;
 
 public class Player extends Figure {
-    int energy = 3;
-    int maxenergy = 3;
+    int maxtime = 3;
 
     Player() {
         health = 50;
         maxhealth = 100;
+        time = 3;
 
         image = new Texture(Gdx.files.internal("badlogic.jpg"));
         setSize(50, 100);
 
         setPosition(0, 1000);
-        MoveToRelativePosition(4, 4);
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
 
-        energy = MathUtils.clamp(energy, 0, maxenergy);
+        time = MathUtils.clamp(time, 0, maxtime);
     }
 
     @Override
     public boolean allFinished() {
-        return !hasEnergy() && super.allFinished();
+        return !hasTime() && super.allFinished();
     }
 
-    public boolean consumeEnergy(int ammont) {
-        if (ammont > energy) {
+    public boolean consumetime(int ammont) {
+        if (ammont > time) {
             return false;
         } else {
-            energy -= ammont;
+            time -= ammont;
             return true;
         }
     }
 
-    public void recoverEnergy() {
-        energy = maxenergy;
+    public void recoverTime() {
+        time = maxtime;
     }
 
-    public boolean hasEnergy() {
-        return energy > 0;
+    public boolean hasTime() {
+        return time > 0;
     }
 }

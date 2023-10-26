@@ -264,12 +264,11 @@ public class Map extends Actor {
         }
     }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-
+    public void draw(Batch batch) {
         int indexX = 0;
         int indexY = 0;
 
+        batch.begin();
         for (int[] i : map) {
             indexY = 0;
             for (int j : i) {
@@ -297,5 +296,6 @@ public class Map extends Actor {
             }
             indexX++;
         }
+        batch.end();
     }
 }

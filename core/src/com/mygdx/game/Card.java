@@ -22,7 +22,7 @@ class Card extends Actor {
 
     ParticleEffect releaseEffect = Effects.getEffect(Effects.types.release);
 
-    int energyCost = 1;
+    int timeCost = 1;
 
     // 文本显示
     CharSequence name;
@@ -48,7 +48,7 @@ class Card extends Actor {
 
     public boolean func(float aimx, float aimy) {
         // 卡牌执行的函数，需要覆盖
-        player.consumeEnergy(energyCost);
+        player.consumetime(timeCost);
         // 是否执行完成
         return false;
     }
@@ -141,7 +141,7 @@ class MoveCard extends Card {
         icon = new Texture(Gdx.files.internal(".\\icons\\move.png"));
         name = "[#000000ff]移动-[#ff0000ff]DEBUG";
         info = String.format("[#000000ff]移动到指定位置, 移动范围为[#00ff00ff] %d [#000000ff]。\n消耗[#00ff00ff] %d [#000000ff]能量",
-                maxRange, energyCost);
+                maxRange, timeCost);
         updateLabels();
     }
 
@@ -157,7 +157,7 @@ class MoveCard extends Card {
                 }
             });
 
-            if (figures.size == 0 && player.consumeEnergy(energyCost)) {
+            if (figures.size == 0 && player.consumetime(timeCost)) {
                 player.MoveToRelativePosition(aimx, aimy);
                 // return true;
             }
@@ -176,7 +176,7 @@ class AttakCard extends Card {
         icon = new Texture(Gdx.files.internal(".\\icons\\attack.png"));
         name = "[#000000ff]攻击-[#ff0000ff]DEBUG";
         info = String.format("[#000000ff]攻击目标，造成[#00ff00ff] %d [#000000ff]点伤害。\n消耗[#00ff00ff] %d [#000000ff]能量", damage,
-                energyCost);
+                timeCost);
         updateLabels();
     }
 
@@ -191,7 +191,7 @@ class AttakCard extends Card {
                 }
             });
 
-            if (figures.size != 0 && player.consumeEnergy(energyCost)) {
+            if (figures.size != 0 && player.consumetime(timeCost)) {
                 figures.first().getDamage(new Damage(player, Consts.PHYSICAL_DAMAGE_ID, damage));
                 Consts.animationRender.addAnimation(new Sweep1(figures.first().getAbsPosition()));
                 // return true;
@@ -224,8 +224,7 @@ class SummonCard extends Card {
             });
 
             if (figures.size == 0) {
-                Enemy enemy = new DebugEnemy();
-                enemy.MoveToRelativePosition(aimx, aimy);
+                Enemy enemy = new DebugEnemy(aimx, aimy);
 
                 Consts.mainstage.addEnemy(enemy);
                 Consts.cardstage.addActor(new SummonCard());

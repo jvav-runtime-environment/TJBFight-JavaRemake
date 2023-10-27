@@ -48,7 +48,7 @@ class Card extends Actor {
 
     public boolean func(float aimx, float aimy) {
         // 卡牌执行的函数，需要覆盖
-        player.consumetime(timeCost);
+        player.consumeTime(timeCost);
         // 是否执行完成
         return false;
     }
@@ -157,7 +157,7 @@ class MoveCard extends Card {
                 }
             });
 
-            if (figures.size == 0 && player.consumetime(timeCost)) {
+            if (figures.size == 0 && player.consumeTime(timeCost)) {
                 player.MoveToRelativePosition(aimx, aimy);
                 // return true;
             }
@@ -191,7 +191,7 @@ class AttakCard extends Card {
                 }
             });
 
-            if (figures.size != 0 && player.consumetime(timeCost)) {
+            if (figures.size != 0 && player.consumeTime(timeCost)) {
                 figures.first().getDamage(new Damage(player, Consts.PHYSICAL_DAMAGE_ID, damage));
                 Consts.animationRender.addAnimation(new Sweep1(figures.first().getAbsPosition()));
                 // return true;

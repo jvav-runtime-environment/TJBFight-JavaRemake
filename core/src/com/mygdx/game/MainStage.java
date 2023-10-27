@@ -60,6 +60,7 @@ public class MainStage extends Stage {
 
         // 注入常量
         Consts.mainstage = this;
+        Consts.sr = sr;
         Consts.cardstage = cardstage;
         Consts.damageRender = damageRender;
         Consts.animationRender = animationRender;
@@ -79,6 +80,10 @@ public class MainStage extends Stage {
         batch.setProjectionMatrix(getCamera().combined);
 
         map.draw(batch);
+
+        for (Enemy i : enemies){
+            i.drawArrowtoAim();
+        }
 
         super.draw();
 
@@ -179,7 +184,7 @@ public class MainStage extends Stage {
     void enemyTurnStart() {
         System.out.println("enemy turn");
         playerTurn = false;
-        
+
         for (Enemy i : enemies) {
             i.recoverTime();
         }

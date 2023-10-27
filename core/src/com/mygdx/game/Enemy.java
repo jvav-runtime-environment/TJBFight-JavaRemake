@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 class Enemy extends Figure {
     boolean AIFinished = false;
+    int[] pos;
 
     Enemy() {
         super();
@@ -64,6 +65,13 @@ class Enemy extends Figure {
         addAction(new SequenceAction(new DelayAction(1), action));
     }
 
+    public void drawArrowtoAim() {
+        if (pos != null) {
+            Vector2 vec = Map.getAbsPosition(pos[0], pos[1]);
+            drawArrowtoAim(vec.x, vec.y);
+        }
+    }
+
     public void AI() {
         if (allFinished()) {
             AIFinished = true;
@@ -72,7 +80,6 @@ class Enemy extends Figure {
 }
 
 class DebugEnemy extends Enemy {
-    int[] pos;
 
     DebugEnemy(float x, float y) {
         super(x, y);
@@ -91,6 +98,11 @@ class DebugEnemy extends Enemy {
 
             breakcounter++;
             if (breakcounter >= 100) {
+                time--;
+                if (time > 0) {
+                    getNextPoint();
+                }
+                pos = null;
                 break;
             }
         }
@@ -99,26 +111,17 @@ class DebugEnemy extends Enemy {
     @Override
     public void AI() {
         if (allFinished()) {
-            switch (time) {
-                case 3:
-                    getNextPoint();
+            if (time > 0) {
+                getNextPoint();
+                if (pos != null) {
                     MoveToRelativePosition(pos[0], pos[1]);
-                    time--;
-                    break;
-                case 2:
-                    getNextPoint();
-                    MoveToRelativePosition(pos[0], pos[1]);
-                    time--;
-                    break;
-                case 1:
-                    getNextPoint();
-                    MoveToRelativePosition(pos[0], pos[1]);
-                    time--;
-                    break;
-                case 0:
-                    AIFinished = true;
-                    break;
+                }
+                time--;
+            } else {
+                AIFinished = true;
+                pos = null;
             }
+
         }
     }
 }

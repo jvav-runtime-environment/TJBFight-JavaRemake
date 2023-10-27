@@ -1,7 +1,10 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
 public class Consts {
     // 注入常量
+    static ShapeRenderer sr;
     static MainStage mainstage;
     static CardStage cardstage;
     static DamageRender damageRender;
@@ -20,6 +23,8 @@ public class Consts {
 
     // 显示常数
     static final int BlockSize = 125;
+    static final float ArrowLength = 25;
+    static final float ArrowWidth = 12;
 
     // 伤害ID
     static final int PHYSICAL_DAMAGE_ID = 0;

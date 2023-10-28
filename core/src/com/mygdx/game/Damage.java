@@ -1,16 +1,20 @@
 package com.mygdx.game;
 
-//import java.util.List;
+import com.badlogic.gdx.utils.Array;
 
 public class Damage {
     Figure Starter;
-    int DamageType;
+    Consts.damagetype DamageType;
     int ammont;
-    // List<Status> status;
+    Array<Status> status = new Array<>();
 
-    Damage(Figure Starter, int DamageType, int ammont) {
+    Damage(Figure Starter, Consts.damagetype DamageType, int ammont) {
         this.Starter = Starter;
         this.DamageType = DamageType;
         this.ammont = ammont;
+    }
+
+    public void addStatus(int ID, int level){
+        status.add(StatusSelector.getStatus(ID, level));
     }
 }

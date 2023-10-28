@@ -25,8 +25,8 @@ class Enemy extends Figure {
     void init() {
         health = 100;
         maxhealth = 100;
-        defaultTime = 1;
-        time = 1;
+        defaultTime = 3;
+        time = 3;
 
         image = new Texture(Gdx.files.internal("badlogic.jpg"));
         setSize(50, 100);
@@ -96,7 +96,7 @@ class DebugEnemy extends Enemy {
                 if (pos != null) {
                     MoveToRelativePosition(pos[0], pos[1]);
                 }
-                time--;
+                consumeTime(1);
             } else {
                 AIFinished = true;
                 pos = null;

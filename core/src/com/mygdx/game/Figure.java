@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
+import com.badlogic.gdx.utils.Array;
 
 public class Figure extends Actor {
     Texture image;
@@ -28,7 +29,7 @@ public class Figure extends Actor {
     ParticleEffect hitEffect = Effects.getEffect(Effects.types.hit);
     ParticleEffect deathEffect = Effects.getEffect(Effects.types.death);
 
-    // other things...
+    Array<Status> status = new Array<>();
 
     Figure() {
         init();
@@ -42,10 +43,17 @@ public class Figure extends Actor {
     void init() {
     }
 
-    void getDamage(Damage damage) {
+    public void getDamage(Damage damage) {
+        for (Status i:damage.status){
+            addStatus(i);
+        }
+
         switch (damage.DamageType) {
-            case Consts.PHYSICAL_DAMAGE_ID:
+            case PHYSICAL_DAMAGE:
                 damage(damage.ammont - armor);
+                break;
+            case STATUS_DAMAGE:
+                damage(damage.ammont);
                 break;
         }
     }
@@ -102,6 +110,13 @@ public class Figure extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
+
+        for (Status i:status){
+            if (i.level<=0){
+                status.removeValue(i, false);
+                i.remove(this);
+            }
+        }
 
         health = MathUtils.clamp(health, 0, maxhealth);
 
@@ -178,6 +193,7 @@ public class Figure extends Actor {
             return false;
         } else {
             time -= ammont;
+            statusConsumeTime();
             return true;
         }
     }
@@ -202,7 +218,60 @@ public class Figure extends Actor {
         return (float) health / (float) maxhealth;
     }
 
+    public void addStatus(Status s) {
+        for (Status i : status) {
+            if (i.ID == s.ID) {
+                i.level += s.level;
+                break;
+            }
+            status.add(s);
+        }
+
+        if (status.isEmpty()){
+            status.add(s);
+        }
+
+        s.attaching(this);
+    }
+
+    public void removeStatus(int ID, int level) {
+        Array<Status> outdated = new Array<>();
+
+        for (Status i : status) {
+            if (i.ID == ID) {
+                if (i.level <= level) {
+                    outdated.add(i);
+                    i.level = 0;
+                    i.remove(this);
+                } else {
+                    i.level -= level;
+                }
+                break;
+            }
+        }
+
+        status.removeAll(outdated, false);
+    }
+
     public Vector2 getAbsPosition() {
         return Map.getAbsPosition(RelativePosition.x, RelativePosition.y);
+    }
+
+    public void statusTurnStart() {
+        for (Status i : status) {
+            i.turnStart(this);
+        }
+    }
+
+    public void statusTurnEnd() {
+        for (Status i : status) {
+            i.turnEnd(this);
+        }
+    }
+
+    private void statusConsumeTime() {
+        for (Status i : status) {
+            i.consumeTime(this);
+        }
     }
 }

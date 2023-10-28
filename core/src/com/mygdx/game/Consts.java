@@ -27,6 +27,11 @@ public class Consts {
     static final float ArrowWidth = 12;
 
     // 伤害ID
-    static final int PHYSICAL_DAMAGE_ID = 0;
+    static enum damagetype {
+        PHYSICAL_DAMAGE, STATUS_DAMAGE
+    }
+
+    // 效果ID
+    static final int Status_Bleed = 0;
 
 }

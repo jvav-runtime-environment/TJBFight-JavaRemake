@@ -192,7 +192,11 @@ class AttakCard extends Card {
             });
 
             if (figures.size != 0 && player.consumeTime(timeCost)) {
-                figures.first().getDamage(new Damage(player, Consts.PHYSICAL_DAMAGE_ID, damage));
+                Damage d = new Damage(player, Consts.damagetype.PHYSICAL_DAMAGE, damage);
+                d.addStatus(Consts.Status_Bleed, 5);
+
+                figures.first().getDamage(d);
+
                 Consts.animationRender.addAnimation(new Sweep1(figures.first().getAbsPosition()));
                 // return true;
             }

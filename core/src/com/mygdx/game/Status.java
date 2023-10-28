@@ -1,22 +1,50 @@
 package com.mygdx.game;
 
-public class Status {
-    int time;
+class StatusSelector {
+    public static Status getStatus(int ID, int level) {
+        switch (ID) {
+            case Consts.Status_Bleed:
+                return new Bleed(level);
+            default:
+                return null;
+        }
+    }
+}
+
+class Status {
     int level;
-    int StatusID;
+    int ID;
 
-    Status(int time, int level, int ID) {
-        this.time = time;
+    Status(int level, int ID) {
         this.level = level;
-        this.StatusID = ID;
+        this.ID = ID;
     }
 
-    void funct(Figure aim) {
-        // do something
+    public void attaching(Figure aim) {
     }
 
-    void remove(Figure aim) {
-        // do something
+    public void turnStart(Figure aim) {
+    }
+
+    public void turnEnd(Figure aim) {
+    }
+
+    public void consumeTime(Figure aim) {
+    }
+
+    public void remove(Figure aim) {
+    }
+}
+
+class Bleed extends Status {
+    Bleed(int level) {
+        super(level, Consts.Status_Bleed);
+    }
+
+    @Override
+    public void consumeTime(Figure aim) {
+        aim.getDamage(new Damage(null, Consts.damagetype.STATUS_DAMAGE, 5));
+        level--;
     }
 
 }

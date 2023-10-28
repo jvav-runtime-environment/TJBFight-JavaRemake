@@ -67,7 +67,7 @@ public class MainStage extends Stage {
 
         player.setRelativePosition(4, 4);
         addActor(player);
-        addEnemy(new DebugEnemy(5, 4));
+        addEnemy(new DebugEnemy(8, 4));
         cardstage.addActor(new DebugCard());
 
         pointerEffect.start();

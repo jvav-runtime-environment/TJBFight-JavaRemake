@@ -25,23 +25,11 @@ class Enemy extends Figure {
     void init() {
         health = 100;
         maxhealth = 100;
-        defaultTime = 3;
-        time = 3;
+        defaultTime = 1;
+        time = 1;
 
         image = new Texture(Gdx.files.internal("badlogic.jpg"));
         setSize(50, 100);
-    }
-
-    public Boolean testPoint(float aimx, float aimy) {
-        Array<Figure> figures = new Array<Figure>();
-
-        figures = Consts.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
-            public boolean select(Figure figure) {
-                return figure.RelativePosition.x == x && figure.RelativePosition.y == y;
-            }
-        });
-
-        return figures.size == 0;
     }
 
     @Override
@@ -90,22 +78,14 @@ class DebugEnemy extends Enemy {
     }
 
     private void getNextPoint() {
-        int breakcounter = 0;
-        pos = Consts.mainstage.map.getInRange(RelativePosition.x, RelativePosition.y, 2).random();
+        Array<int[]> poses = Consts.mainstage.map.getFreePointAround(RelativePosition.x, RelativePosition.y, 2);
 
-        while (!testPoint(pos[0], pos[1])) {
-            pos = Consts.mainstage.map.getInRange(RelativePosition.x, RelativePosition.y, 2).random();
-
-            breakcounter++;
-            if (breakcounter >= 100) {
-                time--;
-                if (time > 0) {
-                    getNextPoint();
-                }
-                pos = null;
-                break;
-            }
+        if (poses.size != 0) {
+            pos = poses.random();
+        }else{
+            pos = null;
         }
+
     }
 
     @Override

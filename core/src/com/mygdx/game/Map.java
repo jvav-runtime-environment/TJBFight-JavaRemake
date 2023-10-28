@@ -123,6 +123,31 @@ public class Map extends Actor {
         return 0;
     }
 
+    public Boolean testPointHasFigure(float x, float y) {
+        Array<Figure> figures = Consts.mainstage.selectFigure(new FigureSelector(x, y) {
+            public boolean select(Figure figure) {
+                return figure.RelativePosition.x == x && figure.RelativePosition.y == y;
+            }
+        });
+
+        return figures.size != 0;
+    }
+
+    public Array<int[]> getFreePointAround(float x, float y, int range) {
+        Array<int[]> array = getInRange(x, y, range);
+        Array<int[]> occupied = new Array<>();
+
+        for (int[] i : array) {
+            if (testPointHasFigure(i[0], i[1])) {
+                occupied.add(i);
+            }
+        }
+
+        array.removeAll(occupied, false);
+
+        return array;
+    }
+
     public void setPoint(Vector2 vec, int status) {
         setPoint((int) vec.x, (int) vec.y, status);
     }
@@ -163,6 +188,16 @@ public class Map extends Actor {
         }
     }
 
+    public Array<int[]> getInRange(float x, float y, int minrange, int maxrange) {
+        Array<int[]> array = getInRange(x, y, maxrange);
+
+        for (int[] i : getInRange(x, y, minrange)) {
+            array.removeValue(i, false);
+        }
+
+        return array;
+    }
+
     public Array<int[]> getInRange(float x, float y, int range) {
         int indexX = 0;
         int indexY = 0;
@@ -196,15 +231,11 @@ public class Map extends Actor {
         return list;
     }
 
-    public void setInRange(int x, int y, int min, int max) {
+    public void setInRange(float x, float y, int min, int max) {
         isReseted = false;
 
-        setRange(x, y, max, 2);
-        setRange(x, y, min, 1);
-    }
-
-    public void setInRange(float x, float y, int min, int max) {
-        setInRange((int) x, (int) y, min, max);
+        setRange((int) x, (int) y, max, 2);
+        setRange((int) x, (int) y, min, 1);
     }
 
     public void setInLine(float x, float y, int direction, int distance, int status) {

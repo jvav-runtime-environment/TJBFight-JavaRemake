@@ -25,9 +25,9 @@ class Card extends Actor {
     int timeCost = 1;
 
     // 文本显示
-    CharSequence name;
+    String name;
     Label nameLabel;
-    CharSequence info;
+    String info;
     Label infoLabel;
 
     Card() {
@@ -148,16 +148,8 @@ class MoveCard extends Card {
     @Override
     public boolean func(float aimx, float aimy) {
         if (map.getPoint(aimx, aimy) == 2) {
-            Array<Figure> figures = new Array<Figure>();
 
-            // 检查位置是否占用
-            figures = Consts.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
-                public boolean select(Figure figure) {
-                    return figure.RelativePosition.x == x && figure.RelativePosition.y == y && figure.allFinished();
-                }
-            });
-
-            if (figures.size == 0 && player.consumeTime(timeCost)) {
+            if (!Consts.map.testPointHasFigure(aimx, aimy) && player.consumeTime(timeCost)) {
                 player.MoveToRelativePosition(aimx, aimy);
                 // return true;
             }
@@ -193,7 +185,7 @@ class AttakCard extends Card {
 
             if (figures.size != 0 && player.consumeTime(timeCost)) {
                 Damage d = new Damage(player, Consts.damagetype.PHYSICAL_DAMAGE, damage);
-                d.addStatus(Consts.Status_Bleed, 5);
+                d.addStatus(Consts.Status_Bleed, 500);
 
                 figures.first().getDamage(d);
 
@@ -219,15 +211,8 @@ class SummonCard extends Card {
     @Override
     public boolean func(float aimx, float aimy) {
         if (map.getPoint(aimx, aimy) == 2) {
-            Array<Figure> figures = new Array<Figure>();
 
-            figures = Consts.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
-                public boolean select(Figure figure) {
-                    return figure.RelativePosition.x == x && figure.RelativePosition.y == y && figure.allFinished();
-                }
-            });
-
-            if (figures.size == 0) {
+            if (!Consts.map.testPointHasFigure(aimx, aimy)) {
                 Enemy enemy = new DebugEnemy(aimx, aimy);
 
                 Consts.mainstage.addEnemy(enemy);

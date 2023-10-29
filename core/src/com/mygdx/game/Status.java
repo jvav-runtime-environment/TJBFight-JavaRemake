@@ -1,12 +1,29 @@
 package com.mygdx.game;
 
-class StatusSelector {
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+
+class StatusManager {
+    public static Texture textureError = new Texture(Gdx.files.internal("badlogic.jpg"));
+    public static Texture textureBleed = new Texture(Gdx.files.internal(".\\status\\bleed.png"));
+
     public static Status getStatus(int ID, int level) {
         switch (ID) {
             case Consts.Status_Bleed:
                 return new Bleed(level);
+
             default:
-                return null;
+                return new Status(0, -1);
+        }
+    }
+
+    public static Texture getStatusTexture(int ID) {
+        switch (ID) {
+            case Consts.Status_Bleed:
+                return textureBleed;
+
+            default:
+                return textureError;
         }
     }
 }
@@ -43,7 +60,7 @@ class Bleed extends Status {
 
     @Override
     public void consumeTime(Figure aim) {
-        aim.getDamage(new Damage(null, Consts.damagetype.STATUS_DAMAGE, 500));
+        aim.getDamage(new Damage(null, Consts.damagetype.STATUS_DAMAGE, 1));
         level--;
     }
 

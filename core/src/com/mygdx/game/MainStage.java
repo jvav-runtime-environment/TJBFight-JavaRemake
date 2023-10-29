@@ -60,6 +60,7 @@ public class MainStage extends Stage {
 
         // 注入常量
         Consts.mainstage = this;
+        Consts.map = map;
         Consts.sr = sr;
         Consts.cardstage = cardstage;
         Consts.damageRender = damageRender;
@@ -95,12 +96,12 @@ public class MainStage extends Stage {
             // 计算血条位置
             float hpBarx, hpBary;
             hpBarx = figure.getCenterX() - Consts.BarWidth / 2;
-            hpBary = figure.getY() - Consts.BarHeight / 2;
+            hpBary = figure.getY() - Consts.BarHeight;
 
             // 计时器计算
             float timerleft, timery;
             timerleft = figure.getCenterX() - (figure.time - 1) * Consts.timerSpace / 2;
-            timery = i.getTop();
+            timery = i.getY();
 
             // 图形准备
             sr.setProjectionMatrix(getCamera().combined);
@@ -127,6 +128,10 @@ public class MainStage extends Stage {
 
         // 动画和伤害数字显示
         batch.begin();
+
+        for (Actor i : getActors()) {
+            ((Figure) i).drawStatus(batch);
+        }
 
         animationRender.draw(batch);
         damageRender.draw(batch);

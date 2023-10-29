@@ -15,6 +15,6 @@ public class Damage {
     }
 
     public void addStatus(int ID, int level){
-        status.add(StatusSelector.getStatus(ID, level));
+        status.add(StatusManager.getStatus(ID, level));
     }
 }

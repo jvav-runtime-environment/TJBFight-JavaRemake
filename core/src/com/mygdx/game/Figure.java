@@ -67,7 +67,7 @@ public class Figure extends Actor {
 
         if (health <= 0) {
             health = 0;
-            
+
             getActions().clear();
 
             // 死亡动画
@@ -156,6 +156,18 @@ public class Figure extends Actor {
 
         hitEffect.draw(batch, Gdx.graphics.getDeltaTime());
         deathEffect.draw(batch, Gdx.graphics.getDeltaTime());
+    }
+
+    public void drawStatus(Batch batch) {
+        float x = getCenterX() - (status.size - 1) * Consts.statusIconSize / 2 - Consts.statusIconSize / 2;
+        float y = getY() - Consts.BarHeight - Consts.statusIconSize;
+
+        for (Status i : status) {
+            batch.draw(StatusManager.getStatusTexture(i.ID), x, y, Consts.statusIconSize, Consts.statusIconSize);
+            x += Consts.statusIconSize / 2;
+            Fonts.getDefaultFont(9).draw(batch, String.valueOf(i.level), x, y + 5);
+            x += Consts.statusIconSize / 2;
+        }
     }
 
     public void drawArrowtoAim(float endx, float endy) {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class Consts {
     // 注入常量
+    static Map map;
     static ShapeRenderer sr;
     static MainStage mainstage;
     static CardStage cardstage;
@@ -20,6 +21,8 @@ public class Consts {
 
     static final int timerSpace = 15;
     static final int timeBallRadius = 3;
+
+    static final int statusIconSize = 16;
 
     // 显示常数
     static final int BlockSize = 125;

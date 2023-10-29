@@ -10,38 +10,92 @@ public class Fonts {
     // 字体
     private static FreeTypeFontGenerator font = new FreeTypeFontGenerator(
             Gdx.files.internal("C:\\Windows\\Fonts\\simhei.ttf"));
-    
-    public static BitmapFont getInfoFont(CharSequence s) {
-        FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        fontParameter.size = 24;
-        fontParameter.characters += s;
 
-        BitmapFont rfont = font.generateFont(fontParameter);
+    private static FreeTypeFontGenerator defaultFont_TTF = new FreeTypeFontGenerator(
+            Gdx.files.internal(".\\fonts\\default.ttf"));
 
-        rfont.getData().markupEnabled = true;
+    private static BitmapFont damageFont;
+    private static BitmapFont infoFont;
+    private static BitmapFont nameFont;
 
-        return rfont;
+    private static int defaultFontSize;
+    private static String chars;
+
+    public static BitmapFont defaultFont;
+
+    public static BitmapFont getInfoFont(String s) {
+        chars += s;
+        return getInfoFont();
     }
 
-    public static BitmapFont getNameFont(CharSequence s) {
+    public static BitmapFont getInfoFont() {
+
+        FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        fontParameter.size = 24;
+        fontParameter.characters += chars;
+
+        infoFont = font.generateFont(fontParameter);
+
+        infoFont.getData().markupEnabled = true;
+
+        return infoFont;
+    }
+
+    public static BitmapFont getNameFont(String s) {
+        chars += s;
+        return getNameFont();
+    }
+
+    public static BitmapFont getNameFont() {
+
         FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         fontParameter.size = 40;
-        fontParameter.characters += s;
+        fontParameter.characters += chars;
 
-        BitmapFont rfont = font.generateFont(fontParameter);
+        nameFont = font.generateFont(fontParameter);
 
-        rfont.getData().markupEnabled = true;
+        nameFont.getData().markupEnabled = true;
 
-        return rfont;
+        return nameFont;
     }
 
     public static BitmapFont getDamageRenderFont() {
-        FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        fontParameter.borderWidth = 1.6f;
-        fontParameter.borderColor = Color.WHITE;
-        fontParameter.size = 30;
-        fontParameter.color = Color.RED;
+        if (damageFont == null) {
+            FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+            fontParameter.borderWidth = 1.6f;
+            fontParameter.borderColor = Color.WHITE;
+            fontParameter.size = 30;
+            fontParameter.color = Color.RED;
 
-        return font.generateFont(fontParameter);
+            damageFont = defaultFont_TTF.generateFont(fontParameter);
+        }
+
+        return damageFont;
+    }
+
+    public static BitmapFont getDefaultFont(int size) {
+        if (defaultFont == null) {
+            defaultFontSize = size;
+
+            FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+            fontParameter.size = defaultFontSize;
+
+            defaultFont = defaultFont_TTF.generateFont(fontParameter);
+        }
+
+        return defaultFont;
+    }
+
+    public static BitmapFont getDefaultFont() {
+        if (defaultFont == null) {
+            defaultFontSize = 16;
+
+            FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+            fontParameter.size = defaultFontSize;
+
+            defaultFont = defaultFont_TTF.generateFont(fontParameter);
+        }
+
+        return defaultFont;
     }
 }

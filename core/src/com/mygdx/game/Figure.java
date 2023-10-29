@@ -44,7 +44,7 @@ public class Figure extends Actor {
     }
 
     public void getDamage(Damage damage) {
-        for (Status i:damage.status){
+        for (Status i : damage.status) {
             addStatus(i);
         }
 
@@ -58,10 +58,18 @@ public class Figure extends Actor {
         }
     }
 
+    public Boolean isDying() {
+        return !deathEffect.isComplete();
+    }
+
     private void damage(int ammont) {
         health -= ammont;
 
         if (health <= 0) {
+            health = 0;
+            
+            getActions().clear();
+
             // 死亡动画
             AlphaAction fadeout = new AlphaAction();
             ParallelAction action = new ParallelAction();
@@ -77,10 +85,12 @@ public class Figure extends Actor {
             // 死亡特效
             deathEffect.setPosition(getCenterX(), getCenterY());
             deathEffect.start();
+
+        } else {
+            addAction(Animations.getShakingAction(2, 5));
         }
 
         Consts.damageRender.add(getX(), getY(), ammont);
-        addAction(Animations.getShakingAction(2, 5));
 
         hitEffect.setPosition(getCenterX(), getCenterY());
         hitEffect.start();
@@ -111,8 +121,8 @@ public class Figure extends Actor {
     public void act(float delta) {
         super.act(delta);
 
-        for (Status i:status){
-            if (i.level<=0){
+        for (Status i : status) {
+            if (i.level <= 0) {
                 status.removeValue(i, false);
                 i.remove(this);
             }
@@ -149,43 +159,45 @@ public class Figure extends Actor {
     }
 
     public void drawArrowtoAim(float endx, float endy) {
-        ShapeRenderer sr = Consts.sr;
-        float startx, starty;
+        if (!isDying()) {
+            ShapeRenderer sr = Consts.sr;
+            float startx, starty;
 
-        startx = getCenterX();
-        starty = getY();
+            startx = getCenterX();
+            starty = getY();
 
-        // 三角形点计算
-        float k, a, p1X, p1Y, p2X, p2Y, lEndx, lEndy;
-        float m = Consts.ArrowLength, n = Consts.ArrowWidth;
+            // 三角形点计算
+            float k, a, p1X, p1Y, p2X, p2Y, lEndx, lEndy;
+            float m = Consts.ArrowLength, n = Consts.ArrowWidth;
 
-        k = (starty - endy) / (startx - endx);// 斜率
-        a = MathUtils.atan(k);// 角度
+            k = (starty - endy) / (startx - endx);// 斜率
+            a = MathUtils.atan(k);// 角度
 
-        // p1X:n*cos(a+((π)/(2)))+m*cos(a)*((x(B))/(abs(x(B))))
-        // p1y:n*sin(a+((π)/(2)))+m*sin(a)*((x(B))/(abs(x(B))))
-        p1X = n * MathUtils.cos(a + MathUtils.HALF_PI)
-                + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
-        p1Y = n * MathUtils.sin(a + MathUtils.HALF_PI)
-                + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
+            // p1X:n*cos(a+((π)/(2)))+m*cos(a)*((x(B))/(abs(x(B))))
+            // p1y:n*sin(a+((π)/(2)))+m*sin(a)*((x(B))/(abs(x(B))))
+            p1X = n * MathUtils.cos(a + MathUtils.HALF_PI)
+                    + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
+            p1Y = n * MathUtils.sin(a + MathUtils.HALF_PI)
+                    + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
 
-        p2X = -n * MathUtils.cos(a + MathUtils.HALF_PI)
-                + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
-        p2Y = -n * MathUtils.sin(a + MathUtils.HALF_PI)
-                + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
+            p2X = -n * MathUtils.cos(a + MathUtils.HALF_PI)
+                    + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
+            p2Y = -n * MathUtils.sin(a + MathUtils.HALF_PI)
+                    + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
 
-        lEndx = m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
-        lEndy = m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
+            lEndx = m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
+            lEndy = m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
 
-        // 绘制准备
-        sr.setColor(1, 0.4f, 0, 1);
-        sr.setProjectionMatrix(Consts.mainstage.getCamera().combined);
-        sr.begin(ShapeType.Filled);
+            // 绘制准备
+            sr.setColor(1, 0.4f, 0, 1);
+            sr.setProjectionMatrix(Consts.mainstage.getCamera().combined);
+            sr.begin(ShapeType.Filled);
 
-        sr.rectLine(startx, starty, lEndx, lEndy, 10);
-        sr.triangle(endx, endy, p1X, p1Y, p2X, p2Y);
+            sr.rectLine(startx, starty, lEndx, lEndy, 10);
+            sr.triangle(endx, endy, p1X, p1Y, p2X, p2Y);
 
-        sr.end();
+            sr.end();
+        }
     }
 
     public boolean consumeTime(int ammont) {
@@ -219,15 +231,15 @@ public class Figure extends Actor {
     }
 
     public void addStatus(Status s) {
-        for (Status i : status) {
-            if (i.ID == s.ID) {
-                i.level += s.level;
-                break;
+        if (!status.isEmpty()) {
+            for (Status i : status) {
+                if (i.ID == s.ID) {
+                    i.level += s.level;
+                    break;
+                }
+                status.add(s);
             }
-            status.add(s);
-        }
-
-        if (status.isEmpty()){
+        } else {
             status.add(s);
         }
 
@@ -235,22 +247,17 @@ public class Figure extends Actor {
     }
 
     public void removeStatus(int ID, int level) {
-        Array<Status> outdated = new Array<>();
-
         for (Status i : status) {
             if (i.ID == ID) {
                 if (i.level <= level) {
-                    outdated.add(i);
-                    i.level = 0;
                     i.remove(this);
+                    status.removeValue(i, false);
                 } else {
                     i.level -= level;
                 }
                 break;
             }
         }
-
-        status.removeAll(outdated, false);
     }
 
     public Vector2 getAbsPosition() {

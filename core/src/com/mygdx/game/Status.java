@@ -43,7 +43,7 @@ class Bleed extends Status {
 
     @Override
     public void consumeTime(Figure aim) {
-        aim.getDamage(new Damage(null, Consts.damagetype.STATUS_DAMAGE, 5));
+        aim.getDamage(new Damage(null, Consts.damagetype.STATUS_DAMAGE, 500));
         level--;
     }
 

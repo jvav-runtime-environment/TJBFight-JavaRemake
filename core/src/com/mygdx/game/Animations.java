@@ -13,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
 public class Animations{
     // 横扫1动画
-    static TextureAtlas sweep1Atlas = new TextureAtlas(Gdx.files.internal(".\\sweep\\sweep.atlas"));
+    static TextureAtlas sweep1Atlas = new TextureAtlas(Gdx.files.internal(".\\animatoins\\sweep\\sweep.atlas"));
     static Array<TextureAtlas.AtlasRegion> sweep1 = sweep1Atlas.getRegions();
 
     public static SequenceAction getShakingAction(float range, int count) {

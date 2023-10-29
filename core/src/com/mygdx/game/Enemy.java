@@ -82,7 +82,7 @@ class DebugEnemy extends Enemy {
 
         if (poses.size != 0) {
             pos = poses.random();
-        }else{
+        } else {
             pos = null;
         }
 

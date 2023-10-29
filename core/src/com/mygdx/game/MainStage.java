@@ -81,7 +81,7 @@ public class MainStage extends Stage {
 
         map.draw(batch);
 
-        for (Enemy i : enemies){
+        for (Enemy i : enemies) {
             i.drawArrowtoAim();
         }
 
@@ -95,12 +95,12 @@ public class MainStage extends Stage {
             // 计算血条位置
             float hpBarx, hpBary;
             hpBarx = figure.getCenterX() - Consts.BarWidth / 2;
-            hpBary = figure.getY() - Consts.BarHeight * 3;
+            hpBary = figure.getY() - Consts.BarHeight / 2;
 
             // 计时器计算
             float timerleft, timery;
             timerleft = figure.getCenterX() - (figure.time - 1) * Consts.timerSpace / 2;
-            timery = hpBary - Consts.BarHeight;
+            timery = i.getTop();
 
             // 图形准备
             sr.setProjectionMatrix(getCamera().combined);

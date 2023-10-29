@@ -74,7 +74,7 @@ public class Fonts {
     }
 
     public static BitmapFont getDefaultFont(int size) {
-        if (defaultFont == null) {
+        if (defaultFontSize != size) {
             defaultFontSize = size;
 
             FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -87,7 +87,7 @@ public class Fonts {
     }
 
     public static BitmapFont getDefaultFont() {
-        if (defaultFont == null) {
+        if (defaultFontSize != 16) {
             defaultFontSize = 16;
 
             FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();

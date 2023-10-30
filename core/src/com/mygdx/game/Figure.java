@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -161,12 +162,17 @@ public class Figure extends Actor {
     public void drawStatus(Batch batch) {
         float x = getCenterX() - (status.size - 1) * Consts.statusIconSize / 2 - Consts.statusIconSize / 2;
         float y = getY() - Consts.BarHeight - Consts.statusIconSize;
+        GlyphLayout layout = new GlyphLayout();
+        String l;
 
         for (Status i : status) {
+            l = String.valueOf(i.level);
+            layout.setText(Fonts.getDefaultFont(10), l);
+
             batch.draw(StatusManager.getStatusTexture(i.ID), x, y, Consts.statusIconSize, Consts.statusIconSize);
-            x += Consts.statusIconSize / 2;
-            Fonts.getDefaultFont(9).draw(batch, String.valueOf(i.level), x, y + 5);
-            x += Consts.statusIconSize / 2;
+            x += Consts.statusIconSize;
+
+            Fonts.getDefaultFont(10).draw(batch, layout, x - layout.width / 2, y + layout.height / 2);
         }
     }
 

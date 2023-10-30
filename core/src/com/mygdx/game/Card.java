@@ -36,8 +36,8 @@ class Card extends Actor {
 
         setSize(image.getWidth(), image.getHeight());
 
-        name = "";
-        info = "";
+        name = "\\";
+        info = "/";
 
         updateLabels();
 
@@ -185,7 +185,7 @@ class AttakCard extends Card {
 
             if (figures.size != 0 && player.consumeTime(timeCost)) {
                 Damage d = new Damage(player, Consts.damagetype.PHYSICAL_DAMAGE, damage);
-                d.addStatus(Consts.Status_Bleed, 500);
+                d.addStatus(Consts.Status_Bleed, 50);
 
                 figures.first().getDamage(d);
 

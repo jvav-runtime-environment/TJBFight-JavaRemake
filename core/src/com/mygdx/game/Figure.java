@@ -172,7 +172,7 @@ public class Figure extends Actor {
             batch.draw(StatusManager.getStatusTexture(i.ID), x, y, Consts.statusIconSize, Consts.statusIconSize);
             x += Consts.statusIconSize;
 
-            Fonts.getDefaultFont(10).draw(batch, layout, x - layout.width / 2, y + layout.height / 2);
+            Fonts.getDefaultFont(10).draw(batch, layout, x - layout.width, y + layout.height / 1.5f);
         }
     }
 

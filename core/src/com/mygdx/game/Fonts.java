@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 public class Fonts {
     // 字体
     private static FreeTypeFontGenerator defaultFont_TTF = new FreeTypeFontGenerator(
-            Gdx.files.internal(".\\fonts\\default.otf"));
+            Gdx.files.internal(".\\fonts\\default.ttf"));
 
     private static BitmapFont damageFont;
     private static BitmapFont infoFont;
@@ -85,7 +85,7 @@ public class Fonts {
             FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
             fontParameter.borderWidth = 1.6f;
             fontParameter.borderColor = Color.WHITE;
-            fontParameter.size = 30;
+            fontParameter.size = 60;
             fontParameter.color = Color.RED;
             fontParameter.mono = true;
 
@@ -104,20 +104,24 @@ public class Fonts {
             fontParameter.mono = true;
 
             defaultFont = defaultFont_TTF.generateFont(fontParameter);
+
+            defaultFont.getData().markupEnabled = true;
         }
 
         return defaultFont;
     }
 
     public static BitmapFont getDefaultFont() {
-        if (defaultFontSize != 16) {
-            defaultFontSize = 16;
+        if (defaultFontSize != 12) {
+            defaultFontSize = 12;
 
             FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
             fontParameter.size = defaultFontSize;
             fontParameter.mono = true;
 
             defaultFont = defaultFont_TTF.generateFont(fontParameter);
+            
+            defaultFont.getData().markupEnabled = true;
         }
 
         return defaultFont;

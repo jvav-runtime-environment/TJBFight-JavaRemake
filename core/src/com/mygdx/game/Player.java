@@ -17,7 +17,7 @@ public class Player extends Figure {
         time = 3;
 
         image = new Texture(Gdx.files.internal("badlogic.jpg"));
-        setSize(50, 100);
+        setSize(Consts.FigureWidth, Consts.FigureHeight);
     }
 
     @Override

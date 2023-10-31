@@ -49,6 +49,8 @@ public class Figure extends Actor {
             addStatus(i);
         }
 
+        statusGettingDamage(damage);
+
         switch (damage.DamageType) {
             case PHYSICAL_DAMAGE:
                 damage(damage.ammont - armor);
@@ -138,7 +140,9 @@ public class Figure extends Actor {
         }
     }
 
-    void kill() {
+    public void kill() {
+        status.clear();
+        clear();
         remove();
     }
 
@@ -167,12 +171,12 @@ public class Figure extends Actor {
 
         for (Status i : status) {
             l = String.valueOf(i.level);
-            layout.setText(Fonts.getDefaultFont(10), l);
+            layout.setText(Fonts.getDefaultFont(), l);
 
             batch.draw(StatusManager.getStatusTexture(i.ID), x, y, Consts.statusIconSize, Consts.statusIconSize);
             x += Consts.statusIconSize;
 
-            Fonts.getDefaultFont(10).draw(batch, layout, x - layout.width, y + layout.height / 1.5f);
+            Fonts.getDefaultFont().draw(batch, layout, x - layout.width, y + layout.height);
         }
     }
 
@@ -228,6 +232,12 @@ public class Figure extends Actor {
         }
     }
 
+    public void attack(Figure aim, Damage damage) {
+        statusAttack(aim, damage);
+
+        aim.getDamage(damage);
+    }
+
     public void recoverTime() {
         time = defaultTime;
     }
@@ -278,6 +288,10 @@ public class Figure extends Actor {
         }
     }
 
+    public String getHealthRatio() {
+        return String.valueOf(health) + "/" + String.valueOf(maxhealth);
+    }
+
     public Vector2 getAbsPosition() {
         return Map.getAbsPosition(RelativePosition.x, RelativePosition.y);
     }
@@ -297,6 +311,18 @@ public class Figure extends Actor {
     private void statusConsumeTime() {
         for (Status i : status) {
             i.consumeTime(this);
+        }
+    }
+
+    private void statusAttack(Figure aim, Damage damage) {
+        for (Status i : status) {
+            i.attacking(aim, damage);
+        }
+    }
+
+    private void statusGettingDamage(Damage damage) {
+        for (int i = status.size - 1; i >= 0; i--) {
+            status.get(i).gettingDamage(this, damage);
         }
     }
 }

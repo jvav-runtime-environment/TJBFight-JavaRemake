@@ -319,7 +319,7 @@ public class Map extends Actor {
                 }
 
                 drawMapPosition.set(getAbsPosition(indexX, indexY));
-                batch.draw(groundImage, drawMapPosition.x - 25, drawMapPosition.y - 12, 50, 24);
+                batch.draw(groundImage, drawMapPosition.x - 50, drawMapPosition.y - 24, 100, 48);
                 // 防止batch颜色错误！！！
                 batch.setColor(1, 1, 1, 1);
 

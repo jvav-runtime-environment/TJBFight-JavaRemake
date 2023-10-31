@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -46,6 +47,8 @@ public class MainStage extends Stage {
     ShapeRenderer sr = new ShapeRenderer();
     DamageRender damageRender = new DamageRender();
     AnimationRender animationRender = new AnimationRender();
+    GlyphLayout layout = new GlyphLayout();
+
     ParticleEffect pointerEffect = Effects.getEffect(Effects.types.pointer);
 
     CardStage cardstage;
@@ -130,7 +133,13 @@ public class MainStage extends Stage {
         batch.begin();
 
         for (Actor i : getActors()) {
-            ((Figure) i).drawStatus(batch);
+            figure = (Figure) i;
+            figure.drawStatus(batch);
+
+            layout.setText(Fonts.getDefaultFont(), "[#0099ffff]" + figure.getHealthRatio());
+
+            Fonts.getDefaultFont().draw(batch, layout, figure.getCenterX() - layout.width / 2,
+                    figure.getY() - 1);
         }
 
         animationRender.draw(batch);
@@ -184,6 +193,11 @@ public class MainStage extends Stage {
         System.out.println("player turn");
         playerTurn = true;
         player.recoverTime();
+
+        for (Enemy i : enemies) {
+            i.statusTurnEnd();
+        }
+        player.statusTurnStart();
     }
 
     void enemyTurnStart() {
@@ -193,6 +207,11 @@ public class MainStage extends Stage {
         for (Enemy i : enemies) {
             i.recoverTime();
         }
+
+        for (Enemy i : enemies) {
+            i.statusTurnStart();
+        }
+        player.statusTurnEnd();
     }
 
     boolean isEnemyAllFinished() {

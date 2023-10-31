@@ -37,19 +37,25 @@ class Status {
         this.ID = ID;
     }
 
-    public void attaching(Figure aim) {
+    public void attaching(Figure self) {
     }
 
-    public void turnStart(Figure aim) {
+    public void turnStart(Figure self) {
     }
 
-    public void turnEnd(Figure aim) {
+    public void turnEnd(Figure self) {
     }
 
-    public void consumeTime(Figure aim) {
+    public void consumeTime(Figure self) {
     }
 
-    public void remove(Figure aim) {
+    public void remove(Figure self) {
+    }
+
+    public void attacking(Figure aim, Damage damage) {
+    }
+
+    public void gettingDamage(Figure self, Damage damage) {
     }
 }
 
@@ -59,8 +65,8 @@ class Bleed extends Status {
     }
 
     @Override
-    public void consumeTime(Figure aim) {
-        aim.getDamage(new Damage(null, Consts.damagetype.STATUS_DAMAGE, 1));
+    public void consumeTime(Figure self) {
+        self.getDamage(new Damage(null, Consts.damagetype.STATUS_DAMAGE, 1));
         level--;
     }
 

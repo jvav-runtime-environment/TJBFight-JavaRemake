@@ -31,8 +31,8 @@ class Card extends Actor {
     Label infoLabel;
 
     Card() {
-        image = new Texture(Gdx.files.internal("card.png"));
-        icon = new Texture(Gdx.files.internal("badlogic.jpg"));
+        image = Textures.card;
+        icon = Textures.cardError;
 
         setSize(image.getWidth(), image.getHeight());
 
@@ -114,7 +114,7 @@ class DebugCard extends Card {
     DebugCard() {
         maxRange = 999;
         minRange = -1;
-        icon = new Texture(Gdx.files.internal(".\\icons\\debug.png"));
+        icon = Textures.cardDebug;
         name = "[#ff0000ff]调试";
         info = "[#ff0000ff]增加一张卡。";
         updateLabels();
@@ -138,7 +138,7 @@ class MoveCard extends Card {
     MoveCard() {
         maxRange = 2;
         minRange = 0;
-        icon = new Texture(Gdx.files.internal(".\\icons\\move.png"));
+        icon = Textures.cardMove;
         name = "[#000000ff]移动-[#ff0000ff]DEBUG";
         info = String.format("[#000000ff]移动到指定位置, 移动范围为[#00ff00ff] %d [#000000ff]。\n消耗[#00ff00ff] %d [#000000ff]能量",
                 maxRange, timeCost);
@@ -165,7 +165,7 @@ class AttakCard extends Card {
         maxRange = 2;
         minRange = 0;
         damage = 20;
-        icon = new Texture(Gdx.files.internal(".\\icons\\attack.png"));
+        icon = Textures.cardAttack;
         name = "[#000000ff]攻击-[#ff0000ff]DEBUG";
         info = String.format("[#000000ff]攻击目标，造成[#00ff00ff] %d [#000000ff]点伤害。\n消耗[#00ff00ff] %d [#000000ff]能量", damage,
                 timeCost);
@@ -187,7 +187,7 @@ class AttakCard extends Card {
                 Damage d = new Damage(player, Consts.damagetype.PHYSICAL_DAMAGE, damage);
                 d.addStatus(Consts.Status_Bleed, 5);
 
-                figures.first().getDamage(d);
+                player.attack(figures.first(), d);
 
                 Consts.animationRender.addAnimation(new Sweep1(figures.first().getAbsPosition()));
                 // return true;
@@ -202,7 +202,7 @@ class SummonCard extends Card {
     SummonCard() {
         maxRange = 99;
         minRange = 0;
-        icon = new Texture(Gdx.files.internal(".\\icons\\summon.png"));
+        icon = Textures.cardSummon;
         name = "[#000000ff]召唤-[#ff0000ff]DEBUG";
         info = String.format("[#000000ff]召唤一个敌人，用于DEBUG");
         updateLabels();

@@ -16,18 +16,23 @@ public class Consts {
     static final int windowHeight = 600;
 
     // 状态条常数
-    static final int BarHeight = 6;
-    static final int BarWidth = 75;
+    static final int BarHeight = 12;
+    static final int BarWidth = 150;
 
-    static final int timerSpace = 15;
-    static final int timeBallRadius = 3;
+    static final int timerSpace = 30;
+    static final int timeBallRadius = 6;
 
-    static final int statusIconSize = 16;
+    static final int statusIconSize = 32;
 
     // 显示常数
-    static final int BlockSize = 125;
-    static final float ArrowLength = 25;
-    static final float ArrowWidth = 12;
+    static final int BlockSize = 250;
+    static final float ArrowLength = 50;
+    static final float ArrowWidth = 24;
+
+    //图片常数
+    static final int FigureWidth = 100;
+    static final int FigureHeight = 200;
+
 
     // 伤害ID
     static enum damagetype {

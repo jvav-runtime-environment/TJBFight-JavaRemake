@@ -32,7 +32,7 @@ class Card extends Actor {
 
     Card() {
         image = Textures.card;
-        icon = Textures.cardError;
+        icon = Textures.Error;
 
         setSize(image.getWidth(), image.getHeight());
 
@@ -184,12 +184,14 @@ class AttakCard extends Card {
             });
 
             if (figures.size != 0 && player.consumeTime(timeCost)) {
+                Figure figure = figures.first();
+
                 Damage d = new Damage(player, Consts.damagetype.PHYSICAL_DAMAGE, damage);
                 d.addStatus(Consts.Status_Bleed, 5);
+                d.addStatus(Consts.Status_Poisoned, 5);
 
-                player.attack(figures.first(), d);
-
-                Consts.animationRender.addAnimation(new Sweep1(figures.first().getAbsPosition()));
+                player.attack(figure, d);
+                Consts.animationRender.addAnimation(new Sweep1(figure.getX(), figure.getCenterY()));
                 // return true;
             }
         }

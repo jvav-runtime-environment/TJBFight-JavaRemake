@@ -2,7 +2,6 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -11,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
-public class Animations{
+public class Animations {
     // 横扫1动画
     static TextureAtlas sweep1Atlas = new TextureAtlas(Gdx.files.internal(".\\animatoins\\sweep\\sweep.atlas"));
     static Array<TextureAtlas.AtlasRegion> sweep1 = sweep1Atlas.getRegions();
@@ -51,26 +50,26 @@ public class Animations{
 }
 
 class positionedAnimation {
-    Vector2 pos;
+    float x, y;
     float lifetime = 0;
     Animation<AtlasRegion> animation;
 
-    positionedAnimation(Animation<AtlasRegion> animation, Vector2 pos) {
-        this.pos = pos;
+    positionedAnimation(Animation<AtlasRegion> animation, float x, float y) {
+        this.x = x;
+        this.y = y;
         this.animation = animation;
     }
 
     public void draw(Batch batch) {
         lifetime += Gdx.graphics.getDeltaTime();
-        batch.draw(animation.getKeyFrame(lifetime), pos.x, pos.y);
+        batch.draw(animation.getKeyFrame(lifetime), x, y - Consts.FigureWidth / 2, Consts.FigureWidth,
+                Consts.FigureWidth);
     }
 }
 
 class Sweep1 extends positionedAnimation {
-    Sweep1(Vector2 pos) {
-        super(new Animation<>(0.03f, Animations.sweep1, PlayMode.NORMAL), pos);
-        pos.x -= 32;
-        pos.y += 32;
+    Sweep1(float x, float y) {
+        super(new Animation<>(0.03f, Animations.sweep1, PlayMode.NORMAL), x, y);
     }
 }
 
@@ -90,5 +89,3 @@ class AnimationRender {
         animations.add(animation);
     }
 }
-
-

@@ -45,11 +45,11 @@ public class Figure extends Actor {
     }
 
     public void getDamage(Damage damage) {
+        statusGettingDamage(damage);
+
         for (Status i : damage.status) {
             addStatus(i);
         }
-
-        statusGettingDamage(damage);
 
         switch (damage.DamageType) {
             case PHYSICAL_DAMAGE:
@@ -173,7 +173,7 @@ public class Figure extends Actor {
             l = String.valueOf(i.level);
             layout.setText(Fonts.getDefaultFont(), l);
 
-            batch.draw(StatusManager.getStatusTexture(i.ID), x, y, Consts.statusIconSize, Consts.statusIconSize);
+            batch.draw(Textures.getStatusTexture(i.ID), x, y, Consts.statusIconSize, Consts.statusIconSize);
             x += Consts.statusIconSize;
 
             Fonts.getDefaultFont().draw(batch, layout, x - layout.width, y + layout.height);
@@ -258,19 +258,26 @@ public class Figure extends Actor {
         return (float) health / (float) maxhealth;
     }
 
+    public boolean hasStatus(int ID){
+        for (Status i : status) {
+            if (ID == i.ID){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addStatus(Status s) {
-        if (!status.isEmpty()) {
+        if (hasStatus(s.ID)) {
             for (Status i : status) {
                 if (i.ID == s.ID) {
                     i.level += s.level;
                     break;
                 }
-                status.add(s);
             }
         } else {
             status.add(s);
         }
-
         s.attaching(this);
     }
 

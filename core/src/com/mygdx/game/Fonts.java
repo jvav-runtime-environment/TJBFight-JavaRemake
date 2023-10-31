@@ -38,10 +38,10 @@ public class Fonts {
     }
 
     public static BitmapFont getInfoFont() {
-
         FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         fontParameter.size = 24;
         fontParameter.characters += chars;
+        fontParameter.mono = true;
 
         infoFont = defaultFont_TTF.generateFont(fontParameter);
 
@@ -68,10 +68,10 @@ public class Fonts {
     }
 
     public static BitmapFont getNameFont() {
-
         FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         fontParameter.size = 40;
         fontParameter.characters += chars;
+        fontParameter.mono = true;
 
         nameFont = defaultFont_TTF.generateFont(fontParameter);
 

@@ -104,7 +104,7 @@ public class MainStage extends Stage {
             // 计时器计算
             float timerleft, timery;
             timerleft = figure.getCenterX() - (figure.time - 1) * Consts.timerSpace / 2;
-            timery = i.getY();
+            timery = i.getY()+6;
 
             // 图形准备
             sr.setProjectionMatrix(getCamera().combined);

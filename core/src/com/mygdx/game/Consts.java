@@ -29,10 +29,9 @@ public class Consts {
     static final float ArrowLength = 50;
     static final float ArrowWidth = 24;
 
-    //图片常数
+    // 图片常数
     static final int FigureWidth = 100;
     static final int FigureHeight = 200;
-
 
     // 伤害ID
     static enum damagetype {

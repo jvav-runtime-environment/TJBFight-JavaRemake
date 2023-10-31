@@ -1,41 +1,37 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 class DamageNumber {
     int lifetime;
-    int ammont;
-    BitmapFont font;
-    Vector2 velocity = new Vector2();
-    Vector2 pos = new Vector2();
+    float velocityX, velocityY, x, y;
+    GlyphLayout layout = new GlyphLayout();
 
     DamageNumber(float x, float y, int ammont) {
-        this.ammont = ammont;
+        layout.setText(Fonts.getDamageRenderFont(), String.valueOf(ammont));
 
-        font = Fonts.getDamageRenderFont();
-
-        pos.x = x;
-        pos.y = y + 32;
+        this.x = x - layout.width / 2;
+        this.y = y - layout.height / 2;
 
         lifetime = 80;
-        velocity.y = 16;
+        velocityY = 32;
 
-        velocity.x = MathUtils.random(-2.01f, 2.01f);
+        velocityX = MathUtils.random(-4, 4);
 
     }
 
     protected void draw(Batch batch) {
         lifetime--;
 
-        font.draw(batch, String.format("%d", ammont), pos.x, pos.y);
+        Fonts.getDamageRenderFont().draw(batch, layout, x, y);
 
         if (lifetime >= 40) {
-            velocity.y -= 0.8f;
-            pos.add(velocity);
+            velocityY -= 1.6f;
+            x += velocityX;
+            y += velocityY;
         }
     }
 }
@@ -44,10 +40,12 @@ public class DamageRender {
     Array<DamageNumber> numbers = new Array<>();
 
     public void draw(Batch batch) {
-        for (DamageNumber i : numbers) {
-            i.draw(batch);
-            if (i.lifetime <= 0) {
-                numbers.removeValue(i, false);
+        for (int i = numbers.size - 1; i >= 0; i--) {
+            DamageNumber j = numbers.get(i);
+
+            j.draw(batch);
+            if (j.lifetime <= 0) {
+                numbers.removeValue(j, false);
             }
         }
     }

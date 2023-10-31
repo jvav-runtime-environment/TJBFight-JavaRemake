@@ -48,7 +48,6 @@ class Card extends Actor {
 
     public boolean func(float aimx, float aimy) {
         // 卡牌执行的函数，需要覆盖
-        player.consumeTime(timeCost);
         // 是否执行完成
         return false;
     }

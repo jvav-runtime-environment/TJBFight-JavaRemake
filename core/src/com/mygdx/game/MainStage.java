@@ -104,7 +104,7 @@ public class MainStage extends Stage {
             // 计时器计算
             float timerleft, timery;
             timerleft = figure.getCenterX() - (figure.time - 1) * Consts.timerSpace / 2;
-            timery = i.getY()+6;
+            timery = i.getY() + 6;
 
             // 图形准备
             sr.setProjectionMatrix(getCamera().combined);
@@ -136,8 +136,8 @@ public class MainStage extends Stage {
             figure = (Figure) i;
             figure.drawStatus(batch);
 
+            // 血量数字显示
             layout.setText(Fonts.getDefaultFont(), "[#0099ffff]" + figure.getHealthRatio());
-
             Fonts.getDefaultFont().draw(batch, layout, figure.getCenterX() - layout.width / 2,
                     figure.getY() - 1);
         }

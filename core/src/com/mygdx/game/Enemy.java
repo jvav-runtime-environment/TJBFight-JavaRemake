@@ -1,7 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -28,7 +26,7 @@ class Enemy extends Figure {
         defaultTime = 3;
         time = 3;
 
-        image = new Texture(Gdx.files.internal("badlogic.jpg"));
+        image = Textures.Error;
         setSize(Consts.FigureWidth, Consts.FigureHeight);
     }
 
@@ -101,7 +99,6 @@ class DebugEnemy extends Enemy {
                 AIFinished = true;
                 pos = null;
             }
-
         }
     }
 }

@@ -19,11 +19,10 @@ import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class CardStage extends Stage {
-    int cardnum = 0;
+    int cardnum;
     Card onFocusCard;
 
     Array<Card> handcard = new Array<>();
-    ShapeRenderer sr = new ShapeRenderer();
 
     Vector2 tempVec = new Vector2();
 
@@ -35,6 +34,7 @@ public class CardStage extends Stage {
     public void draw() {
         super.draw();
 
+        ShapeRenderer sr = Consts.sr;
         if (onFocusCard != null) {
 
             // 绘制选中卡实现覆盖效果
@@ -87,12 +87,13 @@ public class CardStage extends Stage {
         // 坐标转换
         tempVec.set(x, y);
         screenToStageCoordinates(tempVec);
+        Card card = (Card) hit(tempVec.x, tempVec.y, true);
 
         // 判断是否传递事件
-        if (hit(tempVec.x, tempVec.y, true) == null) {
+        if (card == null) {
             return r;
         } else {
-            onFocusCard = (Card) hit(tempVec.x, tempVec.y, true);
+            onFocusCard = card;
             if (handcard.contains(onFocusCard, false) && Consts.mainstage.playerTurn) {
                 return true;
             } else {
@@ -108,7 +109,6 @@ public class CardStage extends Stage {
         cardnum = handcard.size;
 
         int index = 1;
-
         for (Card i : handcard) {
             float d = getWidth() / (cardnum + 1);
 
@@ -134,9 +134,10 @@ public class CardStage extends Stage {
             index++;
         }
 
-        // 检查卡牌动画是否播放完成
+        // 检查卡牌动画是否播放完成，并删除
         for (Actor i : getActors()) {
             Card card = (Card) i;
+
             if (handcard.contains(card, false)) {
                 continue;
             } else {
@@ -148,7 +149,7 @@ public class CardStage extends Stage {
     }
 
     public int getNum() {
-        return cardnum;
+        return handcard.size;
     }
 
     public Card getOnFocusCard() {
@@ -161,17 +162,21 @@ public class CardStage extends Stage {
 
     public void destroyCard(Card card) {
         card.remove();
+        handcard.removeValue(card, false);
     }
 
     public void destroyOnFocusCard() {
         onFocusCard.remove();
+        handcard.removeValue(onFocusCard, false);
         onFocusCard = null;
     }
 
     public void freeCard(Card card) {
+        // 卡牌使用
         handcard.removeValue(card, false);
         card.getActions().clear();
 
+        // 动画:升起并淡出
         MoveByAction maction = new MoveByAction();
 
         maction.setAmountY(MathUtils.random(500, 800));
@@ -193,5 +198,4 @@ public class CardStage extends Stage {
         freeCard(onFocusCard);
         onFocusCard = null;
     }
-
 }

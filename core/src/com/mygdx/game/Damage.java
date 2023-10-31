@@ -14,7 +14,7 @@ public class Damage {
         this.ammont = ammont;
     }
 
-    public void addStatus(int ID, int level){
+    public void addStatus(int ID, int level) {
         status.add(Status.getStatus(ID, level));
     }
 }

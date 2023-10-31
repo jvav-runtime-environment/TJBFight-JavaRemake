@@ -25,12 +25,12 @@ public class Figure extends Actor {
     int maxhealth;
     int armor;
 
-    Vector2 RelativePosition = new Vector2();;// not the real Positon,needs to be changed
+    Vector2 RelativePosition = new Vector2();
 
     ParticleEffect hitEffect = Effects.getEffect(Effects.types.hit);
     ParticleEffect deathEffect = Effects.getEffect(Effects.types.death);
 
-    Array<Status> status = new Array<>();
+    Array<Status> statusList = new Array<>();
 
     Figure() {
         init();
@@ -53,19 +53,15 @@ public class Figure extends Actor {
 
         switch (damage.DamageType) {
             case PHYSICAL_DAMAGE:
-                damage(damage.ammont - armor);
+                damageSelf(damage.ammont - armor);
                 break;
             case STATUS_DAMAGE:
-                damage(damage.ammont);
+                damageSelf(damage.ammont);
                 break;
         }
     }
 
-    public Boolean isDying() {
-        return !deathEffect.isComplete();
-    }
-
-    private void damage(int ammont) {
+    private void damageSelf(int ammont) {
         health -= ammont;
 
         if (health <= 0) {
@@ -93,7 +89,7 @@ public class Figure extends Actor {
             addAction(Animations.getShakingAction(2, 5));
         }
 
-        Consts.damageRender.add(getX(), getY(), ammont);
+        Consts.damageRender.add(getCenterX(), getCenterY(), ammont);
 
         hitEffect.setPosition(getCenterX(), getCenterY());
         hitEffect.start();
@@ -124,15 +120,18 @@ public class Figure extends Actor {
     public void act(float delta) {
         super.act(delta);
 
-        for (Status i : status) {
-            if (i.level <= 0) {
-                status.removeValue(i, false);
-                i.remove(this);
+        // 移除结束的状态
+        for (int i = statusList.size - 1; i >= 0; i--) {
+            Status j = statusList.get(i);
+
+            if (j.level <= 0) {
+                statusList.removeValue(j, false);
+                j.remove(this);
             }
         }
 
+        // 控制血量范围，检查是否死亡
         health = MathUtils.clamp(health, 0, maxhealth);
-
         if (health <= 0) {
             if (allFinished()) {
                 kill();
@@ -140,14 +139,30 @@ public class Figure extends Actor {
         }
     }
 
-    public void kill() {
-        status.clear();
-        clear();
-        remove();
+    public boolean consumeTime(int ammont) {
+        if (ammont > time) {
+            return false;
+        } else {
+            time -= ammont;
+            statusConsumeTime();
+            return true;
+        }
     }
 
-    public boolean allFinished() {
-        return getActions().size == 0 && hitEffect.isComplete() && deathEffect.isComplete();
+    public void attack(Figure aim, Damage damage) {
+        statusAttack(aim, damage);
+
+        aim.getDamage(damage);
+    }
+
+    public void recoverTime() {
+        time = defaultTime;
+    }
+
+    public void kill() {
+        statusList.clear();
+        clear();
+        remove();
     }
 
     @Override
@@ -164,12 +179,12 @@ public class Figure extends Actor {
     }
 
     public void drawStatus(Batch batch) {
-        float x = getCenterX() - (status.size - 1) * Consts.statusIconSize / 2 - Consts.statusIconSize / 2;
+        float x = getCenterX() - (statusList.size - 1) * Consts.statusIconSize / 2 - Consts.statusIconSize / 2;
         float y = getY() - Consts.BarHeight - Consts.statusIconSize;
         GlyphLayout layout = new GlyphLayout();
         String l;
 
-        for (Status i : status) {
+        for (Status i : statusList) {
             l = String.valueOf(i.level);
             layout.setText(Fonts.getDefaultFont(), l);
 
@@ -222,30 +237,6 @@ public class Figure extends Actor {
         }
     }
 
-    public boolean consumeTime(int ammont) {
-        if (ammont > time) {
-            return false;
-        } else {
-            time -= ammont;
-            statusConsumeTime();
-            return true;
-        }
-    }
-
-    public void attack(Figure aim, Damage damage) {
-        statusAttack(aim, damage);
-
-        aim.getDamage(damage);
-    }
-
-    public void recoverTime() {
-        time = defaultTime;
-    }
-
-    public boolean hasTime() {
-        return time > 0;
-    }
-
     public float getCenterX() {
         return getX() + getWidth() / 2;
     }
@@ -258,43 +249,6 @@ public class Figure extends Actor {
         return (float) health / (float) maxhealth;
     }
 
-    public boolean hasStatus(int ID){
-        for (Status i : status) {
-            if (ID == i.ID){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void addStatus(Status s) {
-        if (hasStatus(s.ID)) {
-            for (Status i : status) {
-                if (i.ID == s.ID) {
-                    i.level += s.level;
-                    break;
-                }
-            }
-        } else {
-            status.add(s);
-        }
-        s.attaching(this);
-    }
-
-    public void removeStatus(int ID, int level) {
-        for (Status i : status) {
-            if (i.ID == ID) {
-                if (i.level <= level) {
-                    i.remove(this);
-                    status.removeValue(i, false);
-                } else {
-                    i.level -= level;
-                }
-                break;
-            }
-        }
-    }
-
     public String getHealthRatio() {
         return String.valueOf(health) + "/" + String.valueOf(maxhealth);
     }
@@ -303,33 +257,83 @@ public class Figure extends Actor {
         return Map.getAbsPosition(RelativePosition.x, RelativePosition.y);
     }
 
+    public boolean hasStatus(int ID) {
+        for (Status i : statusList) {
+            if (ID == i.ID) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Boolean isDying() {
+        return !deathEffect.isComplete();
+    }
+
+    public boolean allFinished() {
+        return getActions().size == 0 && hitEffect.isComplete() && deathEffect.isComplete();
+    }
+
+    public boolean hasTime() {
+        return time > 0;
+    }
+
+    public void addStatus(Status s) {
+        if (hasStatus(s.ID)) {
+            for (Status i : statusList) {
+                if (i.ID == s.ID) {
+                    i.level += s.level;
+                    break;
+                }
+            }
+        } else {
+            statusList.add(s);
+        }
+
+        s.attaching(this);
+    }
+
+    public void removeStatus(int ID, int level) {
+        for (Status i : statusList) {
+            if (i.ID == ID) {
+                if (i.level <= level) {
+                    i.remove(this);
+                    statusList.removeValue(i, false);
+                } else {
+                    i.level -= level;
+                }
+                break;
+            }
+        }
+    }
+
     public void statusTurnStart() {
-        for (Status i : status) {
+        for (Status i : statusList) {
             i.turnStart(this);
         }
     }
 
     public void statusTurnEnd() {
-        for (Status i : status) {
+        for (Status i : statusList) {
             i.turnEnd(this);
         }
     }
 
     private void statusConsumeTime() {
-        for (Status i : status) {
+        for (Status i : statusList) {
             i.consumeTime(this);
         }
     }
 
     private void statusAttack(Figure aim, Damage damage) {
-        for (Status i : status) {
+        for (Status i : statusList) {
             i.attacking(aim, damage);
         }
     }
 
     private void statusGettingDamage(Damage damage) {
-        for (int i = status.size - 1; i >= 0; i--) {
-            status.get(i).gettingDamage(this, damage);
+        for (int i = statusList.size - 1; i >= 0; i--) {
+            statusList.get(i).gettingDamage(this, damage);
         }
     }
 }

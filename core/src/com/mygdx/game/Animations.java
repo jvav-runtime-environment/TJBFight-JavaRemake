@@ -77,7 +77,10 @@ class AnimationRender {
     Array<positionedAnimation> animations = new Array<positionedAnimation>();
 
     public void draw(Batch batch) {
-        for (positionedAnimation j : animations) {
+        // 不使用for-each防止出错
+        for (int i = animations.size - 1; i >= 0; i--) {
+            positionedAnimation j = animations.get(i);
+
             j.draw(batch);
             if (j.animation.isAnimationFinished(j.lifetime)) {
                 animations.removeValue(j, false);

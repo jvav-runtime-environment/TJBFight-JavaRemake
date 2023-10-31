@@ -76,7 +76,6 @@ public class Fonts {
         nameFont = defaultFont_TTF.generateFont(fontParameter);
 
         nameFont.getData().markupEnabled = true;
-
         return nameFont;
     }
 
@@ -95,6 +94,7 @@ public class Fonts {
         return damageFont;
     }
 
+    @Deprecated
     public static BitmapFont getDefaultFont(int size) {
         if (defaultFontSize != size) {
             defaultFontSize = size;
@@ -104,7 +104,6 @@ public class Fonts {
             fontParameter.mono = true;
 
             defaultFont = defaultFont_TTF.generateFont(fontParameter);
-
             defaultFont.getData().markupEnabled = true;
         }
 
@@ -120,7 +119,6 @@ public class Fonts {
             fontParameter.mono = true;
 
             defaultFont = defaultFont_TTF.generateFont(fontParameter);
-            
             defaultFont.getData().markupEnabled = true;
         }
 

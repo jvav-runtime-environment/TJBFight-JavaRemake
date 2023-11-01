@@ -52,7 +52,7 @@ class Card extends Actor {
         return false;
     }
 
-    public void setMap() {
+    public void setPointStatus() {
         // 设置地图
         map.setInRange(player.RelativePosition.x, player.RelativePosition.y, minRange, maxRange);
     }
@@ -117,10 +117,6 @@ class DebugCard extends Card {
         name = "[#ff0000ff]调试";
         info = "[#ff0000ff]增加一张卡。";
         updateLabels();
-    }
-
-    @Override
-    public void setMap() {
     }
 
     @Override

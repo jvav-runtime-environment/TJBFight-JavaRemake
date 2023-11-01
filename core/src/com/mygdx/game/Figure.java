@@ -51,19 +51,27 @@ public class Figure extends Actor {
             addStatus(i);
         }
 
+        int ammont = 0;
         switch (damage.DamageType) {
             case PHYSICAL_DAMAGE:
-                damageSelf(damage.ammont - armor);
+                ammont = damage.ammont - armor;
                 break;
             case STATUS_DAMAGE:
-                damageSelf(damage.ammont);
+                ammont = damage.ammont;
                 break;
+        }
+
+        health -= ammont;
+        playHitEffects();
+
+        if (damage.Starter instanceof Status) {
+            Consts.damageRender.add(getCenterX(), getCenterY(), ammont, ((Status) damage.Starter).ID);
+        } else {
+            Consts.damageRender.add(getCenterX(), getCenterY(), ammont);
         }
     }
 
-    private void damageSelf(int ammont) {
-        health -= ammont;
-
+    private void playHitEffects() {
         if (health <= 0) {
             health = 0;
 
@@ -77,7 +85,7 @@ public class Figure extends Actor {
             fadeout.setDuration(0.64f);
 
             action.addAction(fadeout);
-            action.addAction(Animations.getShakingAction(8, 15));
+            action.addAction(Animations.getShakingAction(16, 15));
 
             addAction(action);
 
@@ -86,10 +94,8 @@ public class Figure extends Actor {
             deathEffect.start();
 
         } else {
-            addAction(Animations.getShakingAction(2, 5));
+            addAction(Animations.getShakingAction(4, 5));
         }
-
-        Consts.damageRender.add(getCenterX(), getCenterY(), ammont);
 
         hitEffect.setPosition(getCenterX(), getCenterY());
         hitEffect.start();

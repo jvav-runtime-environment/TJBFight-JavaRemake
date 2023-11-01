@@ -50,7 +50,7 @@ class Bleed extends Status {
 
     @Override
     public void consumeTime(Figure self) {
-        self.getDamage(new Damage(null, Consts.damagetype.STATUS_DAMAGE, 1));
+        self.getDamage(new Damage(this, Consts.damagetype.STATUS_DAMAGE, 1));
         level--;
     }
 }
@@ -62,7 +62,7 @@ class Poisoned extends Status {
 
     @Override
     public void turnStart(Figure self) {
-        self.getDamage(new Damage(null, Consts.damagetype.STATUS_DAMAGE, 1));
+        self.getDamage(new Damage(this, Consts.damagetype.STATUS_DAMAGE, level));
         level--;
     }
 }

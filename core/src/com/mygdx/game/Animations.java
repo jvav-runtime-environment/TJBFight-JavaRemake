@@ -83,7 +83,7 @@ class AnimationRender {
 
             j.draw(batch);
             if (j.animation.isAnimationFinished(j.lifetime)) {
-                animations.removeValue(j, false);
+                animations.removeIndex(i);
             }
         }
     }

@@ -161,11 +161,12 @@ public class MainStage extends Stage {
         map.resetAll();
 
         if (cardstage.onFocusCard != null) {
-            cardstage.onFocusCard.setMap();
+            cardstage.onFocusCard.setPointStatus();
 
             // 超出范围显示红色
             tempVec.set(Gdx.input.getX(), Gdx.input.getY());
             screenToStageCoordinates(tempVec);
+
             if (Map.getRelativePosition(tempVec.x, tempVec.y) != null) {
                 tempVec = Map.getRelativePosition(tempVec.x, tempVec.y);
                 if (map.getPoint(tempVec.x, tempVec.y) == 1) {

@@ -50,13 +50,6 @@ public class Map extends Actor {
         return tempVec.cpy();
     }
 
-    private static void absPositionforDistance(float x, float y) {
-        float outx = MathUtils.cosDeg(120) * y + x;
-        float outy = MathUtils.sinDeg(120) * y;
-
-        tempVec.set(outx, outy);
-    }
-
     public static float getDistance(float x1, float y1, float x2, float y2) {
         float X1, X2, Y1, Y2;
 
@@ -71,18 +64,9 @@ public class Map extends Actor {
 
     }
 
-    // 反向转换
-    private static void calcRelativePosition(float x, float y) {
-        x /= Consts.BlockSize;
-        y /= Consts.BlockSize;
-
-        float outy = y / (MathUtils.sinDeg(120) * 0.6f);
-        float outx = x - MathUtils.cosDeg(120) * outy;
-
-        tempVec.set(outx, outy);
-    }
-
     public static Vector2 getRelativePosition(float x, float y) {
+        // 反向转换
+
         // 坐标转换
         calcRelativePosition(x, y);
 
@@ -93,6 +77,23 @@ public class Map extends Actor {
         } else {
             return null;
         }
+    }
+
+    private static void calcRelativePosition(float x, float y) {
+        x /= Consts.BlockSize;
+        y /= Consts.BlockSize;
+
+        float outy = y / (MathUtils.sinDeg(120) * 0.6f);
+        float outx = x - MathUtils.cosDeg(120) * outy;
+
+        tempVec.set(outx, outy);
+    }
+
+    private static void absPositionforDistance(float x, float y) {
+        float outx = MathUtils.cosDeg(120) * y + x;
+        float outy = MathUtils.sinDeg(120) * y;
+
+        tempVec.set(outx, outy);
     }
 
     Map() {
@@ -113,16 +114,6 @@ public class Map extends Actor {
         return testPointAvalible(x, y) && getPoint(x, y) != 0;
     }
 
-    public int getPoint(float x, float y) {
-        int x1 = (int) x;
-        int y1 = (int) y;
-
-        if (testPointAvalible(x1, y1)) {
-            return map[x1][y1];
-        }
-        return 0;
-    }
-
     public Boolean testPointHasFigure(float x, float y) {
         Array<Figure> figures = Consts.mainstage.selectFigure(new FigureSelector(x, y) {
             public boolean select(Figure figure) {
@@ -133,17 +124,25 @@ public class Map extends Actor {
         return figures.size != 0;
     }
 
+    public int getPoint(float x, float y) {
+        int x1 = (int) x;
+        int y1 = (int) y;
+
+        if (testPointAvalible(x1, y1)) {
+            return map[x1][y1];
+        }
+        return 0;
+    }
+
     public Array<int[]> getFreePointAround(float x, float y, int range) {
         Array<int[]> array = getInRange(x, y, range);
-        Array<int[]> occupied = new Array<>();
 
-        for (int[] i : array) {
-            if (testPointHasFigure(i[0], i[1])) {
-                occupied.add(i);
+        for (int i = array.size - 1; i >= 0; i--) {
+            int[] j = array.get(i);
+            if (testPointHasFigure(j[0], j[1])) {
+                array.removeIndex(i);
             }
         }
-
-        array.removeAll(occupied, false);
 
         return array;
     }
@@ -190,10 +189,7 @@ public class Map extends Actor {
 
     public Array<int[]> getInRange(float x, float y, int minrange, int maxrange) {
         Array<int[]> array = getInRange(x, y, maxrange);
-
-        for (int[] i : getInRange(x, y, minrange)) {
-            array.removeValue(i, false);
-        }
+        array.removeAll(getInRange(x, y, minrange), false);
 
         return array;
     }

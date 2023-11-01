@@ -1,8 +1,6 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.graphics.Texture;
 
 public class Player extends Figure {
     Player() {
@@ -16,7 +14,7 @@ public class Player extends Figure {
         defaultTime = 3;
         time = 3;
 
-        image = new Texture(Gdx.files.internal("badlogic.jpg"));
+        image = Textures.Error;
         setSize(Consts.FigureWidth, Consts.FigureHeight);
     }
 

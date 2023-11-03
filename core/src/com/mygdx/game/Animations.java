@@ -12,8 +12,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
 public class Animations {
     // 横扫1动画
-    static TextureAtlas sweep1Atlas = new TextureAtlas(Gdx.files.internal(".\\animatoins\\sweep\\sweep.atlas"));
-    static Array<TextureAtlas.AtlasRegion> sweep1 = sweep1Atlas.getRegions();
+    private static TextureAtlas textureAtlas = new TextureAtlas(Gdx.files.internal("animations.atlas"));
+
+    public static Animation<AtlasRegion> sweep1 = new Animation<>(0.03f, textureAtlas.findRegions("sweep/page"), PlayMode.NORMAL);
+    public static Animation<AtlasRegion> playerRest = new Animation<>(0.1f, textureAtlas.findRegions("figure/player/rest/page"), PlayMode.NORMAL);
 
     public static SequenceAction getShakingAction(float range, int count) {
         int seg = -1;
@@ -69,7 +71,7 @@ class positionedAnimation {
 
 class Sweep1 extends positionedAnimation {
     Sweep1(float x, float y) {
-        super(new Animation<>(0.03f, Animations.sweep1, PlayMode.NORMAL), x, y);
+        super(Animations.sweep1, x, y);
     }
 }
 
@@ -90,5 +92,74 @@ class AnimationRender {
 
     public void addAnimation(positionedAnimation animation) {
         animations.add(animation);
+    }
+
+}
+
+class AnimationManager {
+    public static enum State {
+        rest, attack
+    }
+
+    Animation<AtlasRegion> rest, attak;
+    float lifetime = 0;
+    State presentState = State.rest;
+
+    AnimationManager() {
+
+    }
+
+    public void setAnimation(State state, Animation<AtlasRegion> animation) {
+        switch (state) {
+            case rest:
+                rest = animation;
+                break;
+            case attack:
+                attak = animation;
+                break;
+        }
+    }
+
+    public void setState(State state) {
+        presentState = state;
+        lifetime = 0;
+    }
+
+    private AtlasRegion getRest() {
+        if (rest == null) {
+            return Textures.Error;
+        }
+
+        if (rest.isAnimationFinished(lifetime)) {
+            lifetime = 0;
+        }
+
+        return rest.getKeyFrame(lifetime);
+    }
+
+    private AtlasRegion getAttack() {
+        if (attak == null) {
+            presentState = State.rest;
+            return Textures.Error;
+        }
+
+        if (attak.isAnimationFinished(lifetime)) {
+            lifetime = 0;
+            presentState = State.rest;
+        }
+
+        return attak.getKeyFrame(lifetime);
+    }
+
+    public AtlasRegion get() {
+        lifetime += Gdx.graphics.getDeltaTime();
+
+        switch (presentState) {
+            case rest:
+                return getRest();
+            case attack:
+                return getAttack();
+        }
+        return null;
     }
 }

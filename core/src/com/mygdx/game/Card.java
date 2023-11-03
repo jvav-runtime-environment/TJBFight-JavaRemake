@@ -4,16 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 class Card extends Actor {
-    Texture image;
-    Texture icon;
+    AtlasRegion image;
+    AtlasRegion icon;
     CardStage stage;
     Player player;
     Map map;
@@ -34,7 +34,7 @@ class Card extends Actor {
         image = Textures.card;
         icon = Textures.Error;
 
-        setSize(image.getWidth(), image.getHeight());
+        setSize(image.getRegionWidth(), image.getRegionHeight());
 
         name = "\\";
         info = "/";

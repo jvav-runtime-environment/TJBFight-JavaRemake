@@ -14,7 +14,8 @@ public class Player extends Figure {
         defaultTime = 3;
         time = 3;
 
-        image = Textures.Error;
+        aniMgr.setAnimation(AnimationManager.State.rest, Animations.playerRest);
+
         setSize(Consts.FigureWidth, Consts.FigureHeight);
     }
 

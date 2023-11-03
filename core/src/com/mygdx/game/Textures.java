@@ -1,22 +1,23 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
 public class Textures {
+    private static TextureAtlas textureAtlas = new TextureAtlas("images.atlas");
 
-    public static Texture Error = new Texture(Gdx.files.internal("badlogic.jpg"));
+    public static AtlasRegion Error = textureAtlas.findRegion("badlogic");
 
-    public static Texture card = new Texture(Gdx.files.internal("card.png"));
-    public static Texture cardDebug = new Texture(Gdx.files.internal(".\\icons\\debug.png"));
-    public static Texture cardMove = new Texture(Gdx.files.internal(".\\icons\\move.png"));
-    public static Texture cardAttack = new Texture(Gdx.files.internal(".\\icons\\attack.png"));
-    public static Texture cardSummon = new Texture(Gdx.files.internal(".\\icons\\summon.png"));
+    public static AtlasRegion card = textureAtlas.findRegion("card");
+    public static AtlasRegion cardDebug = textureAtlas.findRegion("icons/debug");
+    public static AtlasRegion cardMove = textureAtlas.findRegion("icons/move");
+    public static AtlasRegion cardAttack = textureAtlas.findRegion("icons/attack");
+    public static AtlasRegion cardSummon = textureAtlas.findRegion("icons/summon");
 
-    public static Texture textureBleed = new Texture(Gdx.files.internal(".\\status\\bleed.png"));
-    public static Texture texturePoisoned = new Texture(Gdx.files.internal(".\\status\\poisoned.png"));
+    public static AtlasRegion textureBleed = textureAtlas.findRegion("status/bleed");
+    public static AtlasRegion texturePoisoned = textureAtlas.findRegion("status/poisoned");
 
-    public static Texture getStatusTexture(int ID) {
+    public static AtlasRegion getStatusTexture(int ID) {
         switch (ID) {
             case Consts.Status_Bleed:
                 return textureBleed;

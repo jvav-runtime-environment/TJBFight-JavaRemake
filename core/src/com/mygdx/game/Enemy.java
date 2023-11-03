@@ -26,7 +26,6 @@ class Enemy extends Figure {
         defaultTime = 3;
         time = 3;
 
-        image = Textures.Error;
         setSize(Consts.FigureWidth, Consts.FigureHeight);
     }
 

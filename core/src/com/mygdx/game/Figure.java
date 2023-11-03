@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Interpolation;
@@ -18,19 +17,15 @@ import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
 import com.badlogic.gdx.utils.Array;
 
 public class Figure extends Actor {
-    Texture image;
-    int health;
-    int time;
-    int defaultTime;
-    int maxhealth;
-    int armor;
+    int health, time, defaultTime, maxhealth, armor;
+    AnimationManager aniMgr = new AnimationManager();
 
     Vector2 RelativePosition = new Vector2();
+    
+    Array<Status> statusList = new Array<>();
 
     ParticleEffect hitEffect = Effects.getEffect(Effects.types.hit);
     ParticleEffect deathEffect = Effects.getEffect(Effects.types.death);
-
-    Array<Status> statusList = new Array<>();
 
     Figure() {
         init();
@@ -177,7 +172,7 @@ public class Figure extends Actor {
         color.a = getColor().a;
 
         batch.setColor(color);
-        batch.draw(image, getX(), getY(), getWidth(), getHeight());
+        batch.draw(aniMgr.get(), getX(), getY(), getWidth(), getHeight());
         batch.setColor(color.r, color.g, color.b, 1);
 
         hitEffect.draw(batch, Gdx.graphics.getDeltaTime());

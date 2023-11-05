@@ -16,6 +16,7 @@ public class Animations {
 
     public static Animation<AtlasRegion> sweep1 = new Animation<>(0.03f, textureAtlas.findRegions("sweep/page"), PlayMode.NORMAL);
     public static Animation<AtlasRegion> playerRest = new Animation<>(0.1f, textureAtlas.findRegions("figure/player/rest/page"), PlayMode.NORMAL);
+    public static Animation<AtlasRegion> playerAttack = new Animation<>(0.05f, textureAtlas.findRegions("figure/player/attack/page"), PlayMode.NORMAL);
 
     public static SequenceAction getShakingAction(float range, int count) {
         int seg = -1;
@@ -109,6 +110,14 @@ class AnimationManager {
 
     }
 
+    public void flipx() {
+        getWithoutUpdate().flip(true, false);
+    }
+
+    public void flipy() {
+        getWithoutUpdate().flip(false, true);
+    }
+
     public void setAnimation(State state, Animation<AtlasRegion> animation) {
         switch (state) {
             case rest:
@@ -149,6 +158,16 @@ class AnimationManager {
         }
 
         return attak.getKeyFrame(lifetime);
+    }
+
+    private AtlasRegion getWithoutUpdate() {
+        switch (presentState) {
+            case rest:
+                return getRest();
+            case attack:
+                return getAttack();
+        }
+        return null;
     }
 
     public AtlasRegion get() {

@@ -47,7 +47,7 @@ public class Map extends Actor {
 
         tempVec.set(outx * Consts.BlockSize, outy * Consts.BlockSize);
 
-        return tempVec.cpy();
+        return tempVec;
     }
 
     public static float getDistance(float x1, float y1, float x2, float y2) {
@@ -73,7 +73,7 @@ public class Map extends Actor {
         // 检查位置是否在指定范围
         if ((tempVec.x % 1 >= 0.8f || tempVec.x % 1 <= 0.2f) && (tempVec.y % 1 >= 0.75f || tempVec.y % 1 <= 0.25f)) {
             tempVec.set(Math.round(tempVec.x), Math.round(tempVec.y));
-            return tempVec.cpy();
+            return tempVec;
         } else {
             return null;
         }

@@ -18,10 +18,11 @@ import com.badlogic.gdx.utils.Array;
 
 public class Figure extends Actor {
     int health, time, defaultTime, maxhealth, armor;
+    boolean filpx = false;
     AnimationManager aniMgr = new AnimationManager();
 
     Vector2 RelativePosition = new Vector2();
-    
+
     Array<Status> statusList = new Array<>();
 
     ParticleEffect hitEffect = Effects.getEffect(Effects.types.hit);
@@ -108,6 +109,8 @@ public class Figure extends Actor {
         action.setDuration(0.3f);
 
         addAction(action);
+
+        flip(vec.x, vec.y);
     }
 
     public void setRelativePosition(float x, float y) {
@@ -115,6 +118,7 @@ public class Figure extends Actor {
 
         Vector2 vec = Map.getAbsPosition(RelativePosition.x, RelativePosition.y);
         setPosition(vec.x - getWidth() / 2, vec.y);
+        flip(vec.x, vec.y);
     }
 
     @Override
@@ -152,6 +156,8 @@ public class Figure extends Actor {
 
     public void attack(Figure aim, Damage damage) {
         statusAttack(aim, damage);
+        aniMgr.setState(AnimationManager.State.attack);
+        flip(aim.getX(), aim.getY());
 
         aim.getDamage(damage);
     }
@@ -166,13 +172,21 @@ public class Figure extends Actor {
         remove();
     }
 
+    private void flip(float x, float y) {
+        if (x - getX() < 0) {
+            filpx = true;
+        } else {
+            filpx = false;
+        }
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         Color color = batch.getColor();
         color.a = getColor().a;
 
         batch.setColor(color);
-        batch.draw(aniMgr.get(), getX(), getY(), getWidth(), getHeight());
+        batch.draw(aniMgr.get(), filpx ? getWidth() + getX() : getX(), getY(), filpx ? -getWidth() : getWidth(), getHeight());
         batch.setColor(color.r, color.g, color.b, 1);
 
         hitEffect.draw(batch, Gdx.graphics.getDeltaTime());

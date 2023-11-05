@@ -15,6 +15,7 @@ public class Player extends Figure {
         time = 3;
 
         aniMgr.setAnimation(AnimationManager.State.rest, Animations.playerRest);
+        aniMgr.setAnimation(AnimationManager.State.attack, Animations.playerAttack);
 
         setSize(Consts.FigureWidth, Consts.FigureHeight);
     }

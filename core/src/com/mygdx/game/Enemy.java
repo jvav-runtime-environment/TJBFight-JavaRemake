@@ -38,6 +38,7 @@ class Enemy extends Figure {
     @Override
     public void MoveToRelativePosition(float x, float y) {
         RelativePosition.set((int) x, (int) y);
+        flip(x, y);
 
         // 移动动画
         Vector2 vec = Map.getAbsPosition(RelativePosition.x, RelativePosition.y);

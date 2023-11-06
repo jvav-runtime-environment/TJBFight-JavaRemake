@@ -167,10 +167,10 @@ public class MainStage extends Stage {
             tempVec.set(Gdx.input.getX(), Gdx.input.getY());
             screenToStageCoordinates(tempVec);
 
-            if (Map.getRelativePosition(tempVec.x, tempVec.y) != null) {
-                tempVec = Map.getRelativePosition(tempVec.x, tempVec.y);
-                if (map.getPoint(tempVec.x, tempVec.y) == 1) {
-                    map.setPoint(tempVec, 3);
+            Vector2 rVec = Map.getRelativePosition(tempVec.x, tempVec.y);
+            if (rVec != null) {
+                if (map.getPoint(rVec.x, rVec.y) == 1) {
+                    map.setPoint(rVec, 3);
                 }
             }
         }
@@ -317,6 +317,11 @@ public class MainStage extends Stage {
         }
 
         return r;
+    }
+
+    public void updateViewport(int width, int height) {
+        getViewport().update(width, height, false);
+        cardstage.getViewport().update(width, height, true);
     }
 
     public Array<Figure> selectFigure(FigureSelector selector) {

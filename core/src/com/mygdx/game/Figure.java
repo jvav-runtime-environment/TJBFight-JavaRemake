@@ -172,7 +172,7 @@ public class Figure extends Actor {
         remove();
     }
 
-    private void flip(float x, float y) {
+    void flip(float x, float y) {
         if (x - getX() < 0) {
             filpx = true;
         } else {

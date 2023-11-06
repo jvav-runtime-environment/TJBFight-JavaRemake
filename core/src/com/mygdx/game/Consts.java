@@ -42,4 +42,6 @@ public class Consts {
     static final int Status_Bleed = 0;
     static final int Status_Poisoned = 1;
 
+    // 计时器
+    static final int EnemyTimer = 80;
 }

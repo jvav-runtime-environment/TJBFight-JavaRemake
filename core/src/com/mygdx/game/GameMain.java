@@ -35,14 +35,12 @@ public class GameMain extends ApplicationAdapter {
 
 		mainstage.act(Gdx.graphics.getDeltaTime());
 		mainstage.draw();
-
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		// 更新舞台
-		mainstage.getViewport().update(width, height, false);
-		Consts.cardstage.getViewport().update(width, height, true);
+		mainstage.updateViewport(width, height);
 	}
 
 	@Override

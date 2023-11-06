@@ -17,8 +17,7 @@ class Card extends Actor {
     CardStage stage;
     Player player;
     Map map;
-    int maxRange;
-    int minRange;
+    int maxRange, minRange;
 
     ParticleEffect releaseEffect = Effects.getEffect(Effects.types.release);
 
@@ -36,8 +35,8 @@ class Card extends Actor {
 
         setSize(image.getRegionWidth(), image.getRegionHeight());
 
-        name = "\\";
-        info = "/";
+        name = "Error";
+        info = "error";
 
         updateLabels();
 
@@ -135,7 +134,7 @@ class MoveCard extends Card {
         minRange = 0;
         icon = Textures.cardMove;
         name = "[#000000ff]移动-[#ff0000ff]DEBUG";
-        info = String.format("[#000000ff]移动到指定位置, 移动范围为[#00ff00ff] %d [#000000ff]。\n消耗[#00ff00ff] %d [#000000ff]能量",
+        info = String.format("[#000000ff]移动到指定位置, 移动范围为[#00ff00ff] %d [#000000ff]。",
                 maxRange, timeCost);
         updateLabels();
     }
@@ -162,8 +161,7 @@ class AttakCard extends Card {
         damage = 20;
         icon = Textures.cardAttack;
         name = "[#000000ff]攻击-[#ff0000ff]DEBUG";
-        info = String.format("[#000000ff]攻击目标，造成[#00ff00ff] %d [#000000ff]点伤害。\n消耗[#00ff00ff] %d [#000000ff]能量", damage,
-                timeCost);
+        info = String.format("[#000000ff]攻击目标，造成[#00ff00ff] %d [#000000ff]点伤害。", damage, timeCost);
         updateLabels();
     }
 

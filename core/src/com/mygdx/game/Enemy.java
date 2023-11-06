@@ -1,14 +1,11 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 class Enemy extends Figure {
     boolean AIFinished = false;
+    int cooldownTimer = Consts.EnemyTimer;
     int[] pos;
 
     Enemy() {
@@ -35,26 +32,20 @@ class Enemy extends Figure {
         Consts.mainstage.enemies.removeValue(this, false);
     }
 
-    @Override
-    public void MoveToRelativePosition(float x, float y) {
-        RelativePosition.set((int) x, (int) y);
-        flip(x, y);
-
-        // 移动动画
-        Vector2 vec = Map.getAbsPosition(RelativePosition.x, RelativePosition.y);
-        MoveToAction action = new MoveToAction();
-
-        action.setPosition(vec.x - getWidth() / 2, vec.y);
-        action.setInterpolation(Interpolation.circleOut);
-        action.setDuration(0.3f);
-
-        addAction(new SequenceAction(new DelayAction(1), action));
-    }
-
     public void drawArrowtoAim() {
         if (pos != null) {
             Vector2 vec = Map.getAbsPosition(pos[0], pos[1]);
             drawArrowtoAim(vec.x, vec.y);
+        }
+    }
+
+    public boolean timer() {
+        cooldownTimer--;
+        if (cooldownTimer <= 0) {
+            cooldownTimer = Consts.EnemyTimer;
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -78,23 +69,23 @@ class DebugEnemy extends Enemy {
     private void getNextPoint() {
         Array<int[]> poses = Consts.mainstage.map.getFreePointAround(RelativePosition.x, RelativePosition.y, 2);
 
-        if (poses.size != 0) {
+        if (pos == null) {
             pos = poses.random();
-        } else {
-            pos = null;
+            consumeTime(1);
         }
-
     }
 
     @Override
     public void AI() {
         if (allFinished()) {
-            if (time > 0) {
+            if (hasTime() || pos != null) {
+
                 getNextPoint();
-                if (pos != null) {
+                if (timer() && pos != null) {
                     MoveToRelativePosition(pos[0], pos[1]);
+                    pos = null;
                 }
-                consumeTime(1);
+
             } else {
                 AIFinished = true;
                 pos = null;

@@ -5,22 +5,16 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class CardStage extends Stage {
     int cardnum;
-    Card onFocusCard;
 
     Array<Card> handcard = new Array<>();
 
@@ -34,105 +28,62 @@ public class CardStage extends Stage {
     public void draw() {
         super.draw();
 
-        ShapeRenderer sr = Consts.sr;
-        if (onFocusCard != null) {
+        for (Card i : handcard) {
+            if (i.onFocus) {
+                ShapeRenderer sr = Consts.sr;
+                float startx, starty;
 
-            // 绘制选中卡实现覆盖效果
-            Batch batch = getBatch();
-            batch.begin();
-            onFocusCard.draw(batch, 1);
-            batch.end();
+                startx = i.getCenterX();
+                starty = i.getCenterY();
 
-            // 鼠标位置
-            float mousex = Gdx.input.getX();
-            float mousey = Gdx.graphics.getHeight() - Gdx.input.getY();
+                // 三角形点计算
+                float k, a, p1X, p1Y, p2X, p2Y, lEndx, lEndy;
+                float endx = Gdx.input.getX(), endy = i.stage.getHeight() - Gdx.input.getY();
+                float m = Consts.ArrowLength, n = Consts.ArrowWidth;
 
-            // 卡牌位置
-            float cardx = onFocusCard.getCenterX();
-            float cardy = onFocusCard.getCenterY();
+                k = (starty - endy) / (startx - endx);// 斜率
+                a = MathUtils.atan(k);// 角度
 
-            // 图形准备
-            sr.setProjectionMatrix(getCamera().combined);
-            sr.begin(ShapeType.Filled);
-            sr.setColor(0, 1, 0.8f, 0.5f);
+                // p1X:n*cos(a+((π)/(2)))+m*cos(a)*((x(B))/(abs(x(B))))
+                // p1y:n*sin(a+((π)/(2)))+m*sin(a)*((x(B))/(abs(x(B))))
+                p1X = n * MathUtils.cos(a + MathUtils.HALF_PI)
+                        + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
+                p1Y = n * MathUtils.sin(a + MathUtils.HALF_PI)
+                        + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
 
-            // 竖线和圆角
-            sr.rectLine(cardx, cardy, cardx, mousey, 21);
-            sr.circle(cardx, mousey, 10);
+                p2X = -n * MathUtils.cos(a + MathUtils.HALF_PI)
+                        + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
+                p2Y = -n * MathUtils.sin(a + MathUtils.HALF_PI)
+                        + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
 
-            // 箭头左右方向
-            if (mousex > cardx) {
-                sr.rectLine(cardx, mousey, mousex - 30, mousey, 21);
-                sr.triangle(mousex, mousey, mousex - 30, mousey + 18, mousex - 30, mousey - 18);
-            } else {
-                sr.rectLine(cardx, mousey, mousex + 30, mousey, 21);
-                sr.triangle(mousex, mousey, mousex + 30, mousey + 18, mousex + 30, mousey - 18);
+                lEndx = m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
+                lEndy = m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
+
+                // 绘制准备
+                sr.setColor(0, 1, 1, 1);
+                sr.setProjectionMatrix(Consts.cardstage.getCamera().combined);
+                sr.begin(ShapeType.Filled);
+
+                sr.rectLine(startx, starty, lEndx, lEndy, 30);
+                sr.triangle(endx, endy, p1X, p1Y, p2X, p2Y);
+
+                sr.end();
+                break;
             }
-
-            sr.end();
-
         }
+
     }
 
     @Override
     public void addActor(Actor actor) {
         super.addActor(actor);
         handcard.add((Card) actor);
+        updateCardPos();
     }
 
     @Override
-    public boolean touchDown(int x, int y, int pointer, int button) {
-        boolean r = super.touchDown(x, y, pointer, button);
-
-        // 坐标转换
-        tempVec.set(x, y);
-        screenToStageCoordinates(tempVec);
-        Card card = (Card) hit(tempVec.x, tempVec.y, true);
-
-        // 判断是否传递事件
-        if (card == null) {
-            return r;
-        } else {
-            onFocusCard = card;
-            if (handcard.contains(onFocusCard, false) && Consts.mainstage.playerTurn) {
-                return true;
-            } else {
-                onFocusCard = null;
-                return false;
-            }
-        }
-    }
-
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-        cardnum = handcard.size;
-
-        int index = 1;
-        for (Card i : handcard) {
-            float d = getWidth() / (cardnum + 1);
-
-            // 去除所有MoveToAction
-            for (Action j : i.getActions()) {
-                if (j instanceof MoveToAction) {
-                    i.getActions().removeValue(j, false);
-                }
-            }
-
-            MoveToAction action = new MoveToAction();
-
-            action.setPosition(d * index - i.getWidth() / 2, 0);
-            action.setInterpolation(Interpolation.circleOut);
-            action.setDuration(0.8f);
-
-            if (i.equals(onFocusCard)) {
-                action.setPosition(d * index - i.getWidth() / 2, 60);
-            }
-
-            i.addAction(action);
-
-            index++;
-        }
+    public void act() {
+        super.act();
 
         // 检查卡牌动画是否播放完成，并删除
         for (Actor i : getActors()) {
@@ -148,54 +99,46 @@ public class CardStage extends Stage {
         }
     }
 
+    public void updateCardPos() {
+        cardnum = handcard.size;
+
+        int index = 1;
+        for (Card i : handcard) {
+            float d = getWidth() / (cardnum + 1);
+            i.setAimPos(d * index - i.getWidth() / 2, 0);
+
+            index++;
+        }
+    }
+
     public int getNum() {
         return handcard.size;
-    }
-
-    public Card getOnFocusCard() {
-        return onFocusCard;
-    }
-
-    public void resetOnFocusCard() {
-        onFocusCard = null;
     }
 
     public void destroyCard(Card card) {
         card.remove();
         handcard.removeValue(card, false);
-    }
-
-    public void destroyOnFocusCard() {
-        onFocusCard.remove();
-        handcard.removeValue(onFocusCard, false);
-        onFocusCard = null;
+        updateCardPos();
     }
 
     public void freeCard(Card card) {
         // 卡牌使用
         handcard.removeValue(card, false);
         card.getActions().clear();
+        card.clearListeners();
 
-        // 动画:升起并淡出
-        MoveByAction maction = new MoveByAction();
-
-        maction.setAmountY(MathUtils.random(500, 800));
-        maction.setDuration(1);
-        maction.setInterpolation(Interpolation.fade);
-
-        AlphaAction aaction = new AlphaAction();
-        aaction.setDuration(1);
-        aaction.setInterpolation(Interpolation.sineOut);
-
-        ParallelAction action = new ParallelAction(maction, aaction);
+        // 动画:淡出
+        AlphaAction action = new AlphaAction();
+        action.setDuration(0.5f);
+        action.setInterpolation(Interpolation.sineOut);
 
         card.addAction(action);
+
+        card.setAimPos(card.getX(), card.getY() + 200);
+
         card.releaseEffect.setPosition(card.getCenterX(), card.getCenterY());
         card.releaseEffect.start();
-    }
 
-    public void freeOnFocusCard() {
-        freeCard(onFocusCard);
-        onFocusCard = null;
+        updateCardPos();
     }
 }

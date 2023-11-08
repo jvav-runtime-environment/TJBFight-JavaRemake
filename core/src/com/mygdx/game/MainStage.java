@@ -157,24 +157,6 @@ public class MainStage extends Stage {
         super.act(delta);
         cardstage.act(delta);
 
-        // 地图设置
-        map.resetAll();
-
-        if (cardstage.onFocusCard != null) {
-            cardstage.onFocusCard.setPointStatus();
-
-            // 超出范围显示红色
-            tempVec.set(Gdx.input.getX(), Gdx.input.getY());
-            screenToStageCoordinates(tempVec);
-
-            Vector2 rVec = Map.getRelativePosition(tempVec.x, tempVec.y);
-            if (rVec != null) {
-                if (map.getPoint(rVec.x, rVec.y) == 1) {
-                    map.setPoint(rVec, 3);
-                }
-            }
-        }
-
         if (playerTurn) {
             pointerEffect.setPosition(player.getCenterX(), player.getTop());
 
@@ -283,38 +265,7 @@ public class MainStage extends Stage {
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
         boolean r = super.touchUp(x, y, pointer, button);
-        boolean done = false;
-
         isDraggingMap = false;
-
-        if (playerTurn) {
-
-            // 坐标转换
-            tempVec.set(x, y);
-            screenToStageCoordinates(tempVec);
-
-            Figure f = (Figure) hit(tempVec.x, tempVec.y, true);
-
-            // 检查是否有目标？如果有就以目标位置执行，如果没有是否在某个位置？如果有，以位置执行
-            if (cardstage.getOnFocusCard() != null) {
-                if (f != null) {
-                    done = cardstage.getOnFocusCard().func(f.RelativePosition.x, f.RelativePosition.y);
-                } else {
-                    Vector2 position = Map.getRelativePosition(tempVec.x, tempVec.y);
-
-                    if (position != null && map.testPointReachable(position.x, position.y)) {
-                        done = cardstage.getOnFocusCard().func(position.x, position.y);
-                    }
-                }
-            }
-
-            // 检查执行是否成功并处理卡牌
-            if (done) {
-                cardstage.freeOnFocusCard();
-            } else {
-                cardstage.resetOnFocusCard();
-            }
-        }
 
         return r;
     }
@@ -322,6 +273,7 @@ public class MainStage extends Stage {
     public void updateViewport(int width, int height) {
         getViewport().update(width, height, false);
         cardstage.getViewport().update(width, height, true);
+        cardstage.updateCardPos();
     }
 
     public Array<Figure> selectFigure(FigureSelector selector) {

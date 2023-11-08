@@ -7,17 +7,91 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
+class CardListener extends InputListener {
+    Vector2 tempVec = new Vector2();
+    Card card;
+
+    CardListener(Card card) {
+        this.card = card;
+    }
+
+    @Override
+    public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+        if (!card.onFocus) {
+            card.setMap();
+            card.setAimPosY(100);
+        }
+    }
+
+    @Override
+    public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+        if (!card.onFocus) {
+            card.setAimPosY(0);
+            Consts.map.resetAll();
+        }
+    }
+
+    @Override
+    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+        if (Consts.mainstage.playerTurn) {
+            card.onFocus = true;
+        }
+        return Consts.mainstage.playerTurn;
+    }
+
+    @Override
+    public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+        boolean done = false;
+        card.onFocus = false;
+        card.stage.updateCardPos();
+
+        // 坐标转换
+        Consts.mainstage.screenToStageCoordinates(tempVec.set(Gdx.input.getX(), Gdx.input.getY()));
+
+        Figure f = (Figure) Consts.mainstage.hit(tempVec.x, tempVec.y, true);
+
+        // 检查是否有目标？如果有就以目标位置执行，如果没有是否在某个位置？如果有，以位置执行
+        if (f != null) {
+            done = card.func(f.RelativePosition.x, f.RelativePosition.y);
+        } else {
+            Vector2 position = Map.getRelativePosition(tempVec.x, tempVec.y);
+
+            if (position != null && Consts.map.testPointReachable(position.x, position.y)) {
+                done = card.func(position.x, position.y);
+            }
+        }
+
+        // 检查执行是否成功并处理卡牌
+        if (done) {
+            card.stage.freeCard(card);
+        }
+
+        Consts.map.resetAll();
+    }
+
+    @Override
+    public void touchDragged(InputEvent event, float x, float y, int pointer) {
+        card.setAimPos(Gdx.input.getX(), card.stage.getHeight() - Gdx.input.getY());
+        card.setMap();
+    }
+}
+
 class Card extends Actor {
-    AtlasRegion image;
-    AtlasRegion icon;
+    Vector2 tempVec = new Vector2();
+    AtlasRegion image, icon;
     CardStage stage;
     Player player;
     Map map;
+    boolean onFocus = false;
     int maxRange, minRange;
+    float aimx, aimy;
 
     ParticleEffect releaseEffect = Effects.getEffect(Effects.types.release);
 
@@ -43,6 +117,8 @@ class Card extends Actor {
         stage = Consts.cardstage;
         player = Consts.mainstage.player;
         map = Consts.mainstage.map;
+
+        addListener(new CardListener(this));
     }
 
     public boolean func(float aimx, float aimy) {
@@ -64,6 +140,23 @@ class Card extends Actor {
         return getY() + getHeight() / 2;
     }
 
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+
+        float d = (float) Math.sqrt(Math.pow(getX() - aimx, 2) + Math.pow(getY() - aimy, 2));
+
+        if (d <= 1) {
+            setPosition(aimx, aimy);
+        } else {
+            if (!onFocus) {
+                setPosition((aimx - getX()) / 5 + getX(), (aimy - getY()) / 5 + getY());
+            } else {
+                setPosition((aimx - getCenterX() - 500) / 5 + getX(), (aimy - getY()) / 5 + getY());
+            }
+        }
+    }
+
     protected void updateLabels() {
         // 更新卡面文本
         LabelStyle nameStyle = new LabelStyle();
@@ -83,6 +176,37 @@ class Card extends Actor {
         infoLabel.setSize(getWidth() - 10, 150);
         infoLabel.setWrap(true);
         infoLabel.setAlignment(Align.top, Align.center);
+    }
+
+    public void setAimPos(float x, float y) {
+        aimx = x;
+        aimy = y;
+    }
+
+    public void setAimPosX(float x) {
+        aimx = x;
+    }
+
+    public void setAimPosY(float y) {
+        aimy = y;
+    }
+
+    public void setMap() {
+        // 地图设置
+        map.resetAll();
+
+        setPointStatus();
+
+        // 超出范围显示红色
+        tempVec.set(Gdx.input.getX(), Gdx.input.getY());
+        Consts.mainstage.screenToStageCoordinates(tempVec);
+
+        Vector2 rVec = Map.getRelativePosition(tempVec.x, tempVec.y);
+        if (rVec != null) {
+            if (map.getPoint(rVec.x, rVec.y) == 1) {
+                map.setPoint(rVec, 3);
+            }
+        }
     }
 
     @Override
@@ -145,7 +269,8 @@ class MoveCard extends Card {
 
             if (!Consts.map.testPointHasFigure(aimx, aimy) && player.consumeTime(timeCost)) {
                 player.MoveToRelativePosition(aimx, aimy);
-                // return true;
+                Consts.cardstage.addActor(new SummonCard());
+                return true;
             }
         }
         return false;
@@ -185,7 +310,8 @@ class AttakCard extends Card {
 
                 player.attack(figure, d);
                 Consts.animationRender.addAnimation(new Sweep1(figure.getX(), figure.getCenterY()));
-                // return true;
+                Consts.cardstage.addActor(new SummonCard());
+                return true;
             }
         }
         return false;

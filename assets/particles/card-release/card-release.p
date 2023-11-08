@@ -6,7 +6,7 @@ lowMin: 500.0
 lowMax: 500.0
 - Count - 
 min: 0
-max: 15
+max: 2
 - Emission - 
 lowMin: 0.0
 lowMax: 0.0

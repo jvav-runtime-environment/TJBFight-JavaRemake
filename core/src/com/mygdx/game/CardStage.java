@@ -105,7 +105,7 @@ public class CardStage extends Stage {
         int index = 1;
         for (Card i : handcard) {
             float d = getWidth() / (cardnum + 1);
-            i.setAimPos(d * index - i.getWidth() / 2, 0);
+            i.setAimPos(d * index - i.getWidth() / 2, -100);
 
             index++;
         }

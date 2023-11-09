@@ -24,16 +24,16 @@ class CardListener extends InputListener {
 
     @Override
     public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-        if (!card.onFocus) {
+        if (!card.onFocus && !Gdx.input.isButtonPressed(0)) {
             card.setMap();
-            card.setAimPosY(100);
+            card.setAimPosY(0);
         }
     }
 
     @Override
     public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-        if (!card.onFocus) {
-            card.setAimPosY(0);
+        if (!card.onFocus && !Gdx.input.isButtonPressed(0)) {
+            card.setAimPosY(-100);
             Consts.map.resetAll();
         }
     }
@@ -62,7 +62,6 @@ class CardListener extends InputListener {
             done = card.func(f.RelativePosition.x, f.RelativePosition.y);
         } else {
             Vector2 position = Map.getRelativePosition(tempVec.x, tempVec.y);
-
             if (position != null && Consts.map.testPointReachable(position.x, position.y)) {
                 done = card.func(position.x, position.y);
             }
@@ -107,7 +106,7 @@ class Card extends Actor {
         image = Textures.card;
         icon = Textures.Error;
 
-        setSize(image.getRegionWidth(), image.getRegionHeight());
+        setSize(image.getRegionWidth(), image.getRegionHeight() + 100);
 
         name = "Error";
         info = "error";
@@ -215,16 +214,16 @@ class Card extends Actor {
         color.a = getColor().a;
 
         batch.setColor(color);
-        batch.draw(image, getX(), getY());
+        batch.draw(image, getX(), getY() + 100);
 
         // 文本与卡牌的相对位置
-        nameLabel.setPosition(getX() + 5, getHeight() - nameLabel.getHeight() + getY());
-        infoLabel.setPosition(getX() + 5, getY());
+        nameLabel.setPosition(getX() + 5, getHeight() - nameLabel.getHeight() - 5 + getY());
+        infoLabel.setPosition(getX() + 5, getY() + 100);
 
         nameLabel.draw(batch, getColor().a);
         infoLabel.draw(batch, getColor().a);
 
-        batch.draw(icon, getCenterX() - 75, getCenterY() - 35, 150, 150);
+        batch.draw(icon, getCenterX() - 75, getCenterY() + 15, 150, 150);
 
         batch.setColor(color.r, color.g, color.b, color.a);
 
@@ -247,6 +246,7 @@ class DebugCard extends Card {
         stage.addActor(new AttakCard());
         stage.addActor(new MoveCard());
         stage.addActor(new SummonCard());
+        stage.addActor(new RecoverCard());
         return false;
     }
 }
@@ -258,18 +258,16 @@ class MoveCard extends Card {
         minRange = 0;
         icon = Textures.cardMove;
         name = "[#000000ff]移动-[#ff0000ff]DEBUG";
-        info = String.format("[#000000ff]移动到指定位置, 移动范围为[#00ff00ff] %d [#000000ff]。",
-                maxRange, timeCost);
+        info = String.format("[#000000ff]移动到指定位置, 移动范围为[#00ff00ff] %d [#000000ff]。", maxRange, timeCost);
         updateLabels();
     }
 
     @Override
     public boolean func(float aimx, float aimy) {
         if (map.getPoint(aimx, aimy) == 2) {
-
             if (!Consts.map.testPointHasFigure(aimx, aimy) && player.consumeTime(timeCost)) {
                 player.MoveToRelativePosition(aimx, aimy);
-                Consts.cardstage.addActor(new SummonCard());
+                Consts.cardstage.addActor(new MoveCard());
                 return true;
             }
         }
@@ -310,7 +308,7 @@ class AttakCard extends Card {
 
                 player.attack(figure, d);
                 Consts.animationRender.addAnimation(new Sweep1(figure.getX(), figure.getCenterY()));
-                Consts.cardstage.addActor(new SummonCard());
+                Consts.cardstage.addActor(new AttakCard());
                 return true;
             }
         }
@@ -342,5 +340,26 @@ class SummonCard extends Card {
             }
         }
         return false;
+    }
+}
+
+class RecoverCard extends Card {
+    int ammont = 1;
+
+    RecoverCard() {
+        maxRange = 0;
+        minRange = -1;
+        icon = Textures.cardRecoverTime;
+        name = "[#000000ff]恢复时间-[#ff0000ff]DEBUG";
+        info = String.format("[#000000ff]恢复[#00ff00ff] %d [#000000ff]点时间", ammont);
+        updateLabels();
+    }
+
+    @Override
+    public boolean func(float aimx, float aimy) {
+        player.time += 1;
+        Consts.cardstage.addActor(new RecoverCard());
+        return true;
+
     }
 }

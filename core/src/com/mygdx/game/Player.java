@@ -1,7 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.math.MathUtils;
-
 public class Player extends Figure {
     Player() {
         init();
@@ -18,13 +16,6 @@ public class Player extends Figure {
         aniMgr.setAnimation(AnimationManager.State.attack, Animations.playerAttack);
 
         setSize(Consts.FigureWidth, Consts.FigureHeight);
-    }
-
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-
-        time = MathUtils.clamp(time, 0, defaultTime);
     }
 
     @Override

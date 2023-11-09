@@ -13,6 +13,7 @@ public class Textures {
     public static AtlasRegion cardMove = textureAtlas.findRegion("icons/move");
     public static AtlasRegion cardAttack = textureAtlas.findRegion("icons/attack");
     public static AtlasRegion cardSummon = textureAtlas.findRegion("icons/summon");
+    public static AtlasRegion cardRecoverTime = textureAtlas.findRegion("icons/recovertime");
 
     public static AtlasRegion textureBleed = textureAtlas.findRegion("status/bleed");
     public static AtlasRegion texturePoisoned = textureAtlas.findRegion("status/poisoned");

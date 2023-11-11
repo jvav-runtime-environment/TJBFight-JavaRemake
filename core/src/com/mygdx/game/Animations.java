@@ -17,6 +17,7 @@ public class Animations {
     public static Animation<AtlasRegion> sweep1 = new Animation<>(0.03f, textureAtlas.findRegions("sweep/page"), PlayMode.NORMAL);
     public static Animation<AtlasRegion> playerRest = new Animation<>(0.1f, textureAtlas.findRegions("figure/player/rest/page"), PlayMode.NORMAL);
     public static Animation<AtlasRegion> playerAttack = new Animation<>(0.05f, textureAtlas.findRegions("figure/player/attack/page"), PlayMode.NORMAL);
+    public static Animation<AtlasRegion> enemyCHRest = new Animation<>(0.1f, textureAtlas.findRegions("figure/enemy_ch/rest/page"), PlayMode.NORMAL);
 
     public static SequenceAction getShakingAction(float range, int count) {
         int seg = -1;

@@ -66,6 +66,12 @@ class DebugEnemy extends Enemy {
         super();
     }
 
+    @Override
+    void init() {
+        super.init();
+        aniMgr.setAnimation(AnimationManager.State.rest, Animations.enemyCHRest);
+    }
+
     private void getNextPoint() {
         Array<int[]> poses = Consts.mainstage.map.getFreePointAround(RelativePosition.x, RelativePosition.y, 2);
 

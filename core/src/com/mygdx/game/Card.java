@@ -318,7 +318,7 @@ class AttakCard extends Card {
                     return false;
                 }
                 // player.attack(figure, d);
-                Bullet b = new Bullet(d, aimx, aimy, 3, dir, player.team);
+                Bullet b = new Bullet(d, player.relativePosition.x, player.relativePosition.y, 3, dir, player.team);
 
                 Consts.mainstage.addActor(b);
                 Consts.cardstage.addActor(new AttakCard());

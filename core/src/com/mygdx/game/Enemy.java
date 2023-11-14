@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 class Enemy extends Figure {
@@ -31,13 +30,6 @@ class Enemy extends Figure {
     public void kill() {
         super.kill();
         Consts.mainstage.enemies.removeValue(this, false);
-    }
-
-    public void drawArrowtoAim() {
-        if (pos != null) {
-            Vector2 vec = Map.getAbsPosition(pos[0], pos[1]);
-            drawArrowtoAim(vec.x, vec.y);
-        }
     }
 
     public boolean timer() {

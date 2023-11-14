@@ -73,7 +73,7 @@ public class MainStage extends Stage {
 
         player.setRelativePosition(4, 4);
         addActor(player);
-        addActor(new DebugEnemy(8, 4));
+        addActor(new DebugEnemy(5, 4));
         cardstage.addActor(new DebugCard());
 
         pointerEffect.start();
@@ -87,16 +87,25 @@ public class MainStage extends Stage {
 
         map.draw(batch);
 
+        // 箭头绘制
+        sr.begin(ShapeType.Filled);
         for (Enemy i : enemies) {
-            i.drawArrowtoAim();
+            if (!i.isDying() && i.pos != null) {
+                drawArrowtoAim(i.getCenterX(), i.getY(), i.pos[0], i.pos[1], new Color(1, 0.4f, 0, 1));
+            }
         }
 
         for (Bullet i : bullets) {
-            i.drawArrowtoAim();
+            boolean t = i.team == player.team;
+            drawArrowtoAim(i.getCenterX(), i.getY(), i.nextpoint.x, i.nextpoint.y, t ? Color.GREEN : Color.YELLOW);
         }
+        sr.end();
 
+        // 图片
         super.draw();
 
+        // 状态绘制
+        sr.begin(ShapeType.Filled);
         for (Figure figure : figures) {
             // 计算血条位置
             float hpBarx, hpBary;
@@ -110,7 +119,7 @@ public class MainStage extends Stage {
 
             // 图形准备
             sr.setProjectionMatrix(getCamera().combined);
-            sr.begin(ShapeType.Filled);
+
             sr.setColor(Color.GOLD);
 
             // 血条绘制
@@ -126,10 +135,8 @@ public class MainStage extends Stage {
                 sr.circle(timerleft, timery, Consts.timeBallRadius);
                 timerleft += Consts.timerSpace;
             }
-
-            // 结束
-            sr.end();
         }
+        sr.end();
 
         // 动画和伤害数字显示
         batch.begin();
@@ -323,4 +330,36 @@ public class MainStage extends Stage {
         }
         return figures;
     }
+
+    public void drawArrowtoAim(float startx, float starty, float tox, float toy, Color color) {
+        ShapeRenderer sr = Consts.sr;
+        Vector2 vec = Map.getAbsPosition(tox, toy);
+        float endx = vec.x, endy = vec.y;
+
+        // 三角形点计算
+        float k, a, p1X, p1Y, p2X, p2Y, lEndx, lEndy;
+        float m = Consts.ArrowLength, n = Consts.ArrowWidth;
+
+        k = (starty - endy) / (startx - endx);// 斜率
+        a = MathUtils.atan(k);// 角度
+
+        // p1X:n*cos(a+((π)/(2)))+m*cos(a)*((x(B))/(abs(x(B))))
+        // p1y:n*sin(a+((π)/(2)))+m*sin(a)*((x(B))/(abs(x(B))))
+        p1X = n * MathUtils.cos(a + MathUtils.HALF_PI) + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
+        p1Y = n * MathUtils.sin(a + MathUtils.HALF_PI) + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
+
+        p2X = -n * MathUtils.cos(a + MathUtils.HALF_PI) + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
+        p2Y = -n * MathUtils.sin(a + MathUtils.HALF_PI) + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
+
+        lEndx = m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
+        lEndy = m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
+
+        // 绘制准备
+        sr.setColor(color);
+        sr.setProjectionMatrix(Consts.mainstage.getCamera().combined);
+
+        sr.rectLine(startx, starty, lEndx, lEndy, 30);
+        sr.triangle(endx, endy, p1X, p1Y, p2X, p2Y);
+    }
+
 }

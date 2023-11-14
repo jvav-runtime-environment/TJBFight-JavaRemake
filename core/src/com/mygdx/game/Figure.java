@@ -9,8 +9,6 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
@@ -211,44 +209,6 @@ public class Figure extends Actor {
             x += Consts.statusIconSize;
 
             Fonts.getDefaultFont().draw(batch, layout, x - layout.width, y + layout.height);
-        }
-    }
-
-    public void drawArrowtoAim(float endx, float endy) {
-        if (!isDying()) {
-            ShapeRenderer sr = Consts.sr;
-            float startx, starty;
-
-            startx = getCenterX();
-            starty = getY();
-
-            // 三角形点计算
-            float k, a, p1X, p1Y, p2X, p2Y, lEndx, lEndy;
-            float m = Consts.ArrowLength, n = Consts.ArrowWidth;
-
-            k = (starty - endy) / (startx - endx);// 斜率
-            a = MathUtils.atan(k);// 角度
-
-            // p1X:n*cos(a+((π)/(2)))+m*cos(a)*((x(B))/(abs(x(B))))
-            // p1y:n*sin(a+((π)/(2)))+m*sin(a)*((x(B))/(abs(x(B))))
-            p1X = n * MathUtils.cos(a + MathUtils.HALF_PI) + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
-            p1Y = n * MathUtils.sin(a + MathUtils.HALF_PI) + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
-
-            p2X = -n * MathUtils.cos(a + MathUtils.HALF_PI) + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
-            p2Y = -n * MathUtils.sin(a + MathUtils.HALF_PI) + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
-
-            lEndx = m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
-            lEndy = m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
-
-            // 绘制准备
-            sr.setColor(1, 0.4f, 0, 1);
-            sr.setProjectionMatrix(Consts.mainstage.getCamera().combined);
-            sr.begin(ShapeType.Filled);
-
-            sr.rectLine(startx, starty, lEndx, lEndy, 10);
-            sr.triangle(endx, endy, p1X, p1Y, p2X, p2Y);
-
-            sr.end();
         }
     }
 

@@ -64,9 +64,8 @@ public class Map extends Actor {
 
     }
 
+    // 反向转换
     public static Vector2 getRelativePosition(float x, float y) {
-        // 反向转换
-
         // 坐标转换
         calcRelativePosition(x, y);
 

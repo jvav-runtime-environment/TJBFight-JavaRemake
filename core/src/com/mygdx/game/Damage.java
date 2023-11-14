@@ -4,11 +4,11 @@ import com.badlogic.gdx.utils.Array;
 
 public class Damage {
     Object Starter;
-    Consts.damagetype DamageType;
+    Consts.damageType DamageType;
     int ammont;
     Array<Status> status = new Array<>();
 
-    Damage(Object Starter, Consts.damagetype DamageType, int ammont) {
+    Damage(Object Starter, Consts.damageType DamageType, int ammont) {
         this.Starter = Starter;
         this.DamageType = DamageType;
         this.ammont = ammont;

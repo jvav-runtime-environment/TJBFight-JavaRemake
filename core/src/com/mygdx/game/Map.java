@@ -117,7 +117,7 @@ public class Map extends Actor {
     public Boolean testPointHasFigure(float x, float y) {
         Array<Figure> figures = Consts.mainstage.selectFigure(new FigureSelector(x, y) {
             public boolean select(Figure figure) {
-                return figure.RelativePosition.x == x && figure.RelativePosition.y == y;
+                return figure.relativePosition.x == x && figure.relativePosition.y == y;
             }
         });
 
@@ -145,6 +145,60 @@ public class Map extends Actor {
         }
 
         return array;
+    }
+
+    public Vector2 getPointByDirection(float x, float y, int distance, int direction) {
+        switch (direction) {
+            case 0:
+                tempVec.set( (int) (x + distance), (int) y );
+                break;
+            case 1:
+                tempVec.set( (int) (x + distance), (int) (y + distance) );
+                break;
+            case 2:
+                tempVec.set( (int) x, (int) (y + distance) );
+                break;
+            case 3:
+                tempVec.set( (int) (x - distance), (int) y );
+                break;
+            case 4:
+                tempVec.set( (int) (x - distance), (int) (y - distance) );
+                break;
+            case 5:
+                tempVec.set( (int) x, (int) (y - distance) );
+                break;
+            default:
+                return null;
+        }
+        return tempVec;
+    }
+
+    public int getDirection(float fromx, float fromy, float aimx, float aimy) {
+        if (fromx == aimx && fromy == aimy) {
+            return -1;
+        } else {
+            if (fromx == aimx) {
+                if (aimy > fromy) {
+                    return 2;
+                } else {
+                    return 5;
+                }
+            } else if (fromy == aimy) {
+                if (aimx > fromx) {
+                    return 0;
+                } else {
+                    return 3;
+                }
+            } else if ((aimx - fromx) / (aimy - fromy) == 1) {
+                if (aimx > fromx) {
+                    return 1;
+                } else {
+                    return 4;
+                }
+            }else{
+                return -1;
+            }
+        }
     }
 
     public void setPoint(Vector2 vec, int status) {

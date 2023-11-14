@@ -19,9 +19,10 @@ import com.badlogic.gdx.utils.Array;
 public class Figure extends Actor {
     int health, time, defaultTime, maxhealth, armor;
     boolean filpx = false;
+    Consts.team team;
     AnimationManager aniMgr = new AnimationManager();
 
-    Vector2 RelativePosition = new Vector2();
+    Vector2 relativePosition = new Vector2();
 
     Array<Status> statusList = new Array<>();
 
@@ -98,10 +99,10 @@ public class Figure extends Actor {
     }
 
     public void MoveToRelativePosition(float x, float y) {
-        RelativePosition.set((int) x, (int) y);
+        relativePosition.set((int) x, (int) y);
 
         // 移动动画
-        Vector2 vec = Map.getAbsPosition(RelativePosition.x, RelativePosition.y);
+        Vector2 vec = Map.getAbsPosition(relativePosition.x, relativePosition.y);
         MoveToAction action = new MoveToAction();
 
         action.setPosition(vec.x - getWidth() / 2, vec.y);
@@ -114,9 +115,9 @@ public class Figure extends Actor {
     }
 
     public void setRelativePosition(float x, float y) {
-        RelativePosition.set((int) x, (int) y);
+        relativePosition.set((int) x, (int) y);
 
-        Vector2 vec = Map.getAbsPosition(RelativePosition.x, RelativePosition.y);
+        Vector2 vec = Map.getAbsPosition(relativePosition.x, relativePosition.y);
         setPosition(vec.x - getWidth() / 2, vec.y);
         flip(vec.x, vec.y);
     }
@@ -160,6 +161,8 @@ public class Figure extends Actor {
         flip(aim.getX(), aim.getY());
 
         aim.getDamage(damage);
+
+        Consts.animationRender.addAnimation(new Sweep1(getX(), getCenterY()));
     }
 
     public void recoverTime() {
@@ -169,6 +172,7 @@ public class Figure extends Actor {
     public void kill() {
         statusList.clear();
         clear();
+        Consts.mainstage.figures.removeValue(this, false);
         remove();
     }
 
@@ -227,15 +231,11 @@ public class Figure extends Actor {
 
             // p1X:n*cos(a+((π)/(2)))+m*cos(a)*((x(B))/(abs(x(B))))
             // p1y:n*sin(a+((π)/(2)))+m*sin(a)*((x(B))/(abs(x(B))))
-            p1X = n * MathUtils.cos(a + MathUtils.HALF_PI)
-                    + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
-            p1Y = n * MathUtils.sin(a + MathUtils.HALF_PI)
-                    + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
+            p1X = n * MathUtils.cos(a + MathUtils.HALF_PI) + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
+            p1Y = n * MathUtils.sin(a + MathUtils.HALF_PI) + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
 
-            p2X = -n * MathUtils.cos(a + MathUtils.HALF_PI)
-                    + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
-            p2Y = -n * MathUtils.sin(a + MathUtils.HALF_PI)
-                    + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
+            p2X = -n * MathUtils.cos(a + MathUtils.HALF_PI) + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
+            p2Y = -n * MathUtils.sin(a + MathUtils.HALF_PI) + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
 
             lEndx = m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
             lEndy = m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
@@ -269,7 +269,7 @@ public class Figure extends Actor {
     }
 
     public Vector2 getAbsPosition() {
-        return Map.getAbsPosition(RelativePosition.x, RelativePosition.y);
+        return Map.getAbsPosition(relativePosition.x, relativePosition.y);
     }
 
     public boolean hasStatus(int ID) {

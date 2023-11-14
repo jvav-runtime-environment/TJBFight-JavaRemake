@@ -22,6 +22,7 @@ class Enemy extends Figure {
         maxhealth = 100;
         defaultTime = 3;
         time = 3;
+        team = Consts.team.enemy;
 
         setSize(Consts.FigureWidth, Consts.FigureHeight);
     }
@@ -73,7 +74,7 @@ class DebugEnemy extends Enemy {
     }
 
     private void getNextPoint() {
-        Array<int[]> poses = Consts.mainstage.map.getFreePointAround(RelativePosition.x, RelativePosition.y, 2);
+        Array<int[]> poses = Consts.mainstage.map.getFreePointAround(relativePosition.x, relativePosition.y, 2);
 
         if (pos == null) {
             pos = poses.random();

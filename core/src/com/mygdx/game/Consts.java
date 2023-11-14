@@ -34,8 +34,13 @@ public class Consts {
     static final int FigureHeight = 200;
 
     // 伤害ID
-    static enum damagetype {
+    static enum damageType {
         PHYSICAL_DAMAGE, STATUS_DAMAGE
+    }
+
+    // 队列
+    static enum team {
+        player, enemy
     }
 
     // 效果ID

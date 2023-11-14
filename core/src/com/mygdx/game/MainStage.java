@@ -39,7 +39,9 @@ public class MainStage extends Stage {
     int round = 0;
     boolean playerTurn = true;
 
-    Array<Enemy> enemies = new Array<Enemy>();
+    Array<Enemy> enemies = new Array<>();
+    Array<Figure> figures = new Array<>();
+    Array<Bullet> bullets = new Array<>();
 
     Map map = new Map();
     Player player = new Player();
@@ -71,7 +73,7 @@ public class MainStage extends Stage {
 
         player.setRelativePosition(4, 4);
         addActor(player);
-        addEnemy(new DebugEnemy(8, 4));
+        addActor(new DebugEnemy(8, 4));
         cardstage.addActor(new DebugCard());
 
         pointerEffect.start();
@@ -89,13 +91,13 @@ public class MainStage extends Stage {
             i.drawArrowtoAim();
         }
 
+        for (Bullet i : bullets) {
+            i.drawArrowtoAim();
+        }
+
         super.draw();
 
-        Figure figure;
-        for (Actor i : getActors()) {
-            // 类转换
-            figure = (Figure) i;
-
+        for (Figure figure : figures) {
             // 计算血条位置
             float hpBarx, hpBary;
             hpBarx = figure.getCenterX() - Consts.BarWidth / 2;
@@ -104,7 +106,7 @@ public class MainStage extends Stage {
             // 计时器计算
             float timerleft, timery;
             timerleft = figure.getCenterX() - (figure.time - 1) * Consts.timerSpace / 2;
-            timery = i.getY() + 6;
+            timery = figure.getY() + 6;
 
             // 图形准备
             sr.setProjectionMatrix(getCamera().combined);
@@ -132,14 +134,12 @@ public class MainStage extends Stage {
         // 动画和伤害数字显示
         batch.begin();
 
-        for (Actor i : getActors()) {
-            figure = (Figure) i;
+        for (Figure figure : figures) {
             figure.drawStatus(batch);
 
             // 血量数字显示
             layout.setText(Fonts.getDefaultFont(), "[#0099ffff]" + figure.getHealthRatio());
-            Fonts.getDefaultFont().draw(batch, layout, figure.getCenterX() - layout.width / 2,
-                    figure.getY() - 1);
+            Fonts.getDefaultFont().draw(batch, layout, figure.getCenterX() - layout.width / 2, figure.getY() - 1);
         }
 
         animationRender.draw(batch);
@@ -149,7 +149,6 @@ public class MainStage extends Stage {
         batch.end();
 
         cardstage.draw();
-
     }
 
     @Override
@@ -160,19 +159,38 @@ public class MainStage extends Stage {
         if (playerTurn) {
             pointerEffect.setPosition(player.getCenterX(), player.getTop());
 
-            if (player.allFinished()) {
-                enemyTurnStart();
+            if (player.allFinished() && isBulletsAllFinished()) {
+                updateBullets();
+                enemyTurn();
             }
 
         } else {
-            if (isEnemyAllFinished()) {
+            if (isEnemyAllFinished() && isBulletsAllFinished()) {
                 round++;
-                playerTurnStart();
+                updateBullets();
+                playerTurn();
+
             }
         }
     }
 
-    void playerTurnStart() {
+    public Figure getFigurebyPosition(float x, float y) {
+        for (int i = figures.size - 1; i >= 0; i--) {
+            Figure figure = figures.get(i);
+            if (figure.relativePosition.x == x && figure.relativePosition.y == y) {
+                return figure;
+            }
+        }
+        return null;
+    }
+
+    void updateBullets() {
+        for (int i = bullets.size - 1; i >= 0; i--) {
+            bullets.get(i).update();
+        }
+    }
+
+    void playerTurn() {
         System.out.println("player turn");
         playerTurn = true;
         player.recoverTime();
@@ -183,7 +201,7 @@ public class MainStage extends Stage {
         player.statusTurnStart();
     }
 
-    void enemyTurnStart() {
+    void enemyTurn() {
         System.out.println("enemy turn");
         playerTurn = false;
 
@@ -211,6 +229,15 @@ public class MainStage extends Stage {
             i.AIFinished = false;
         }
 
+        return true;
+    }
+
+    boolean isBulletsAllFinished() {
+        for (Bullet bullet : bullets) {
+            if (!bullet.isFinished()) {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -257,9 +284,18 @@ public class MainStage extends Stage {
         return r;
     }
 
-    public void addEnemy(Enemy enemy) {
-        enemies.add(enemy);
-        addActor(enemy);
+    @Override
+    public void addActor(Actor actor) {
+        super.addActor(actor);
+
+        if (actor instanceof Figure) {
+            figures.add((Figure) actor);
+            if (actor instanceof Enemy) {
+                enemies.add((Enemy) actor);
+            }
+        } else if (actor instanceof Bullet) {
+            bullets.add((Bullet) actor);
+        }
     }
 
     @Override
@@ -280,14 +316,11 @@ public class MainStage extends Stage {
         Array<Figure> figures = new Array<Figure>();
 
         // 选择figure
-        for (Actor i : getActors()) {
-            Figure figure = (Figure) i;
-
+        for (Figure figure : this.figures) {
             if (selector.select(figure)) {
                 figures.add(figure);
             }
         }
-
         return figures;
     }
 }

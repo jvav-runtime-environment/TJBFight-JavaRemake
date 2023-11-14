@@ -2,7 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
+// import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -50,16 +50,23 @@ class CardListener extends InputListener {
     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
         boolean done = false;
         card.onFocus = false;
+        Figure f;
         card.stage.updateCardPos();
 
         // 坐标转换
         Consts.mainstage.screenToStageCoordinates(tempVec.set(Gdx.input.getX(), Gdx.input.getY()));
 
-        Figure f = (Figure) Consts.mainstage.hit(tempVec.x, tempVec.y, true);
+        Actor a = Consts.mainstage.hit(tempVec.x, tempVec.y, true);
+
+        if (a instanceof Figure) {
+            f = (Figure) a;
+        } else {
+            f = null;
+        }
 
         // 检查是否有目标？如果有就以目标位置执行，如果没有是否在某个位置？如果有，以位置执行
         if (f != null) {
-            done = card.func(f.RelativePosition.x, f.RelativePosition.y);
+            done = card.func(f.relativePosition.x, f.relativePosition.y);
         } else {
             Vector2 position = Map.getRelativePosition(tempVec.x, tempVec.y);
             if (position != null && Consts.map.testPointReachable(position.x, position.y)) {
@@ -128,7 +135,7 @@ class Card extends Actor {
 
     public void setPointStatus() {
         // 设置地图
-        map.setInRange(player.RelativePosition.x, player.RelativePosition.y, minRange, maxRange);
+        map.setInRange(player.relativePosition.x, player.relativePosition.y, minRange, maxRange);
     }
 
     public float getCenterX() {
@@ -279,7 +286,7 @@ class AttakCard extends Card {
     int damage;
 
     AttakCard() {
-        maxRange = 2;
+        maxRange = 1;
         minRange = 0;
         damage = 20;
         icon = Textures.cardAttack;
@@ -291,23 +298,29 @@ class AttakCard extends Card {
     @Override
     public boolean func(float aimx, float aimy) {
         if (map.getPoint(aimx, aimy) == 2) {
-            Array<Figure> figures = new Array<Figure>();
+            // Array<Figure> figures = new Array<Figure>();
 
-            figures = Consts.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
-                public boolean select(Figure figure) {
-                    return figure.RelativePosition.x == x && figure.RelativePosition.y == y && figure.allFinished();
-                }
-            });
+            // figures = Consts.mainstage.selectFigure(new FigureSelector(aimx, aimy) {
+            // public boolean select(Figure figure) {
+            // return figure.relativePosition.x == x && figure.relativePosition.y == y &&
+            // figure.allFinished();
+            // }
+            // });
 
-            if (figures.size != 0 && player.consumeTime(timeCost)) {
-                Figure figure = figures.first();
+            if (player.consumeTime(timeCost)) {
+                // Figure figure = figures.first();
 
-                Damage d = new Damage(player, Consts.damagetype.PHYSICAL_DAMAGE, damage);
+                Damage d = new Damage(player, Consts.damageType.PHYSICAL_DAMAGE, damage);
                 d.addStatus(Consts.Status_Bleed, 5);
                 d.addStatus(Consts.Status_Poisoned, 5);
+                int dir = map.getDirection(player.relativePosition.x, player.relativePosition.y, aimx, aimy);
+                if (dir == -1) {
+                    return false;
+                }
+                // player.attack(figure, d);
+                Bullet b = new Bullet(d, aimx, aimy, 3, dir, player.team);
 
-                player.attack(figure, d);
-                Consts.animationRender.addAnimation(new Sweep1(figure.getX(), figure.getCenterY()));
+                Consts.mainstage.addActor(b);
                 Consts.cardstage.addActor(new AttakCard());
                 return true;
             }
@@ -334,7 +347,7 @@ class SummonCard extends Card {
             if (!Consts.map.testPointHasFigure(aimx, aimy)) {
                 Enemy enemy = new DebugEnemy(aimx, aimy);
 
-                Consts.mainstage.addEnemy(enemy);
+                Consts.mainstage.addActor(enemy);
                 Consts.cardstage.addActor(new SummonCard());
                 return true;
             }

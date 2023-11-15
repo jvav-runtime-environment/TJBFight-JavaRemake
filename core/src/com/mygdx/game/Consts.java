@@ -27,7 +27,7 @@ public class Consts {
     // 显示常数
     static final int BlockSize = 250;
     static final float ArrowLength = 50;
-    static final float ArrowWidth = 24;
+    static final float ArrowWidth = 30;
 
     // 图片常数
     static final int FigureWidth = 100;

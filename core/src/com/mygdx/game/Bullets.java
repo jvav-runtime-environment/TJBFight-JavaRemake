@@ -1,17 +1,22 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 
 class Bullet extends Actor {
     int direction, speed, penetrate = 1;
-    Vector2 nextpoint = new Vector2();
-    Vector2 relativePosition = new Vector2();
     Damage damage;
     Consts.team team;
     boolean collide = false, arrived = false;
+
+    ParticleEffect effect;
+
+    Vector2 nextpoint = new Vector2();
+    Vector2 relativePosition = new Vector2();
 
     Vector2 tempVec = new Vector2();
 
@@ -23,13 +28,6 @@ class Bullet extends Actor {
 
         setSize(100, 100);
         setRelativePosition(x, y);
-
-        Figure figure = Consts.mainstage.getFigurebyPosition(x, y);
-        if (figure != null && figure.team != team) {
-            nextpoint.set(figure.relativePosition);
-            attack(figure);
-            collide = true;
-        }
 
         getNextPoint();
     }
@@ -76,7 +74,8 @@ class Bullet extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(Textures.Error, getX(), getY(), getWidth(), getHeight());
+        batch.draw(Textures.bulletFireBall, getX(), getY() + 25, getWidth(), getHeight());
+        effect.draw(batch, Gdx.graphics.getDeltaTime());
     }
 
     public void setRelativePosition(float x, float y) {
@@ -93,6 +92,8 @@ class Bullet extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
+
+        effect.setPosition(getCenterX(), getCenterY() + 25);
 
         if (!arrived && isFinished()) {
             arrived = true;
@@ -137,4 +138,12 @@ class Bullet extends Actor {
     public boolean isFinished() {
         return getActions().isEmpty();
     }
+}
+
+class FireBall extends Bullet {
+    FireBall(Damage damage, float x, float y, int speed, int direction, Consts.team team) {
+        super(damage, x, y, speed, direction, team);
+        effect = Effects.getEffect(Effects.types.flame);
+    }
+
 }

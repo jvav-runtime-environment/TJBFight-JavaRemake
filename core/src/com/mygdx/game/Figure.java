@@ -67,33 +67,35 @@ public class Figure extends Actor {
     }
 
     private void playHitEffects() {
-        if (health <= 0) {
-            health = 0;
+        if (!isDying()) {
+            if (health <= 0) {
+                health = 0;
 
-            getActions().clear();
+                getActions().clear();
 
-            // 死亡动画
-            AlphaAction fadeout = new AlphaAction();
-            ParallelAction action = new ParallelAction();
+                // 死亡动画
+                AlphaAction fadeout = new AlphaAction();
+                ParallelAction action = new ParallelAction();
 
-            fadeout.setAlpha(0);
-            fadeout.setDuration(0.64f);
+                fadeout.setAlpha(0);
+                fadeout.setDuration(0.64f);
 
-            action.addAction(fadeout);
-            action.addAction(Animations.getShakingAction(16, 15));
+                action.addAction(fadeout);
+                action.addAction(Animations.getShakingAction(16, 15));
 
-            addAction(action);
+                addAction(action);
 
-            // 死亡特效
-            deathEffect.setPosition(getCenterX(), getCenterY());
-            deathEffect.start();
+                // 死亡特效
+                deathEffect.setPosition(getCenterX(), getCenterY());
+                deathEffect.start();
 
-        } else {
-            addAction(Animations.getShakingAction(4, 5));
+            } else {
+                addAction(Animations.getShakingAction(4, 5));
+            }
+
+            hitEffect.setPosition(getCenterX(), getCenterY());
+            hitEffect.start();
         }
-
-        hitEffect.setPosition(getCenterX(), getCenterY());
-        hitEffect.start();
     }
 
     public void MoveToRelativePosition(float x, float y) {

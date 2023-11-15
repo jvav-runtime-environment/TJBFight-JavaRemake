@@ -18,6 +18,8 @@ public class Textures {
     public static AtlasRegion textureBleed = textureAtlas.findRegion("status/bleed");
     public static AtlasRegion texturePoisoned = textureAtlas.findRegion("status/poisoned");
 
+    public static AtlasRegion bulletFireBall = textureAtlas.findRegion("bullets/fireball");
+
     public static AtlasRegion getStatusTexture(int ID) {
         switch (ID) {
             case Consts.Status_Bleed:

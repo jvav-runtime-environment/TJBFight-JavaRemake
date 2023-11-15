@@ -96,8 +96,7 @@ public class MainStage extends Stage {
         }
 
         for (Bullet i : bullets) {
-            boolean t = i.team == player.team;
-            drawArrowtoAim(i.getCenterX(), i.getY(), i.nextpoint.x, i.nextpoint.y, t ? Color.GREEN : Color.YELLOW);
+            drawArrowtoAim(i.getCenterX(), i.getY(), i.nextpoint.x, i.nextpoint.y, (i.team == player.team) ? Color.GREEN : Color.YELLOW);
         }
         sr.end();
 
@@ -179,16 +178,6 @@ public class MainStage extends Stage {
 
             }
         }
-    }
-
-    public Figure getFigurebyPosition(float x, float y) {
-        for (int i = figures.size - 1; i >= 0; i--) {
-            Figure figure = figures.get(i);
-            if (figure.relativePosition.x == x && figure.relativePosition.y == y) {
-                return figure;
-            }
-        }
-        return null;
     }
 
     void updateBullets() {
@@ -331,6 +320,16 @@ public class MainStage extends Stage {
         return figures;
     }
 
+    public Figure getFigurebyPosition(float x, float y) {
+        for (int i = figures.size - 1; i >= 0; i--) {
+            Figure figure = figures.get(i);
+            if (figure.relativePosition.x == x && figure.relativePosition.y == y) {
+                return figure;
+            }
+        }
+        return null;
+    }
+
     public void drawArrowtoAim(float startx, float starty, float tox, float toy, Color color) {
         ShapeRenderer sr = Consts.sr;
         Vector2 vec = Map.getAbsPosition(tox, toy);
@@ -351,15 +350,14 @@ public class MainStage extends Stage {
         p2X = -n * MathUtils.cos(a + MathUtils.HALF_PI) + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
         p2Y = -n * MathUtils.sin(a + MathUtils.HALF_PI) + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
 
-        lEndx = m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
-        lEndy = m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
+        lEndx = (m - 4) * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
+        lEndy = (m - 4) * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
 
         // 绘制准备
         sr.setColor(color);
         sr.setProjectionMatrix(Consts.mainstage.getCamera().combined);
 
-        sr.rectLine(startx, starty, lEndx, lEndy, 30);
-        sr.triangle(endx, endy, p1X, p1Y, p2X, p2Y);
+        sr.rectLine(startx, starty, lEndx, lEndy, 15);
+        sr.triangle(endx, endy, p1X, (p1Y > p2Y) ? p1Y - 13 : p1Y + 13, p2X, (p1Y < p2Y) ? p2Y - 13 : p2Y + 13);
     }
-
 }

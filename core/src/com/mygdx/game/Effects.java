@@ -8,23 +8,18 @@ public class Effects {
     static ParticleEffect deathEffect = new ParticleEffect();
     static ParticleEffect releaseEffect = new ParticleEffect();
     static ParticleEffect pointerEffect = new ParticleEffect();
+    static ParticleEffect flameEffect = new ParticleEffect();
 
     static enum types {
-        hit, death, release, pointer
+        hit, death, release, pointer, flame
     }
 
     public static void load() {
-        hitEffect.load(Gdx.files.internal(".\\particles\\spark\\spark.p"),
-                Gdx.files.internal(".\\particles\\spark"));
-
-        deathEffect.load(Gdx.files.internal(".\\particles\\bubble\\bubble.p"),
-                Gdx.files.internal(".\\particles\\bubble"));
-
-        releaseEffect.load(Gdx.files.internal(".\\particles\\card-release\\card-release.p"),
-                Gdx.files.internal(".\\particles\\card-release\\"));
-
-        pointerEffect.load(Gdx.files.internal(".\\particles\\pointer\\pointer.p"),
-                Gdx.files.internal(".\\particles\\pointer\\"));
+        hitEffect.load(Gdx.files.internal(".\\particles\\spark\\spark.p"), Gdx.files.internal(".\\particles\\spark"));
+        deathEffect.load(Gdx.files.internal(".\\particles\\bubble\\bubble.p"), Gdx.files.internal(".\\particles\\bubble"));
+        releaseEffect.load(Gdx.files.internal(".\\particles\\card-release\\card-release.p"), Gdx.files.internal(".\\particles\\card-release\\"));
+        pointerEffect.load(Gdx.files.internal(".\\particles\\pointer\\pointer.p"), Gdx.files.internal(".\\particles\\pointer\\"));
+        flameEffect.load(Gdx.files.internal(".\\particles\\flame\\flame.p"), Gdx.files.internal(".\\particles\\flame\\"));
     }
 
     public static ParticleEffect getEffect(types e) {
@@ -41,6 +36,8 @@ public class Effects {
                 return new ParticleEffect(releaseEffect);
             case pointer:
                 return new ParticleEffect(pointerEffect);
+            case flame:
+                return new ParticleEffect(flameEffect);
 
             default:
                 return null;

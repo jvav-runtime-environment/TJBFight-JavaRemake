@@ -3,6 +3,16 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 
+/*
+ * 
+ * 下一步：池化管理粒子，对外提供粒子指针，实现统一绘制、处理粒子
+ * --粒子图片使用TextureAtlas
+ * 
+ * 
+ */
+
+
+
 public class Effects {
     static ParticleEffect sparkEffect = new ParticleEffect();
     static ParticleEffect bubbleEffect = new ParticleEffect();

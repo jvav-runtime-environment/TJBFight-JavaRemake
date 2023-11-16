@@ -4,7 +4,6 @@ import com.badlogic.gdx.utils.Array;
 
 class Enemy extends Figure {
     boolean AIFinished = false;
-    int cooldownTimer = Consts.EnemyTimer;
     int[] pos;
 
     Enemy() {
@@ -30,16 +29,6 @@ class Enemy extends Figure {
     public void kill() {
         super.kill();
         Consts.mainstage.enemies.removeValue(this, false);
-    }
-
-    public boolean timer() {
-        cooldownTimer--;
-        if (cooldownTimer <= 0) {
-            cooldownTimer = Consts.EnemyTimer;
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public void AI() {
@@ -68,23 +57,16 @@ class DebugEnemy extends Enemy {
     private void getNextPoint() {
         Array<int[]> poses = Consts.mainstage.map.getFreePointAround(relativePosition.x, relativePosition.y, 2);
 
-        if (pos == null) {
-            pos = poses.random();
-            consumeTime(1);
-        }
+        pos = poses.random();
+        consumeTime(1);
     }
 
     @Override
     public void AI() {
         if (allFinished()) {
-            if (hasTime() || pos != null) {
-
+            if (hasTime()) {
                 getNextPoint();
-                if (timer() && pos != null) {
-                    MoveToRelativePosition(pos[0], pos[1]);
-                    pos = null;
-                }
-
+                MoveToRelativePosition(pos[0], pos[1]);
             } else {
                 AIFinished = true;
                 pos = null;

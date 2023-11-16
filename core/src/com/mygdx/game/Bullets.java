@@ -58,14 +58,13 @@ class Bullet extends Actor {
 
             Figure figure = Consts.mainstage.getFigurebyPosition(tempVec.x, tempVec.y);
             if (figure != null && figure.team != team) {
-                collide = true;
-                arrived = true;
-                nextpoint.set(figure.relativePosition);
-
                 attack(figure);
 
                 c--;
                 if (c <= 0) {
+                    collide = true;
+                    arrived = true;
+                    nextpoint.set(figure.relativePosition);
                     break;
                 }
             }
@@ -145,5 +144,4 @@ class FireBall extends Bullet {
         super(damage, x, y, speed, direction, team);
         effect = Effects.getEffect(Effects.types.flame);
     }
-
 }

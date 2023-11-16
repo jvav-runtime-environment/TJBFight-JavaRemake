@@ -24,8 +24,8 @@ public class Figure extends Actor {
 
     Array<Status> statusList = new Array<>();
 
-    ParticleEffect hitEffect = Effects.getEffect(Effects.types.hit);
-    ParticleEffect deathEffect = Effects.getEffect(Effects.types.death);
+    ParticleEffect hitEffect = Effects.getEffect(Effects.types.spark);
+    ParticleEffect deathEffect = Effects.getEffect(Effects.types.bubble);
 
     Figure() {
         init();

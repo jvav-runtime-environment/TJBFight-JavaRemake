@@ -350,8 +350,8 @@ public class MainStage extends Stage {
         p2X = -n * MathUtils.cos(a + MathUtils.HALF_PI) + m * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
         p2Y = -n * MathUtils.sin(a + MathUtils.HALF_PI) + m * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
 
-        lEndx = (m - 4) * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
-        lEndy = (m - 4) * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
+        lEndx = (m - 13) * MathUtils.cos(a) * Math.signum(startx - endx) + endx;
+        lEndy = (m - 13) * MathUtils.sin(a) * Math.signum(startx - endx) + endy;
 
         // 绘制准备
         sr.setColor(color);
